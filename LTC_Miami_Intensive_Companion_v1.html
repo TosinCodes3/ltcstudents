@@ -1,0 +1,1310 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080A">
+<title>The Miami Intensive — Student Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#08080A;
+  --ink-2:#0D0D10;
+  --ink-3:#141418;
+  --bone:#EDEDF0;
+  --bone-60:rgba(237,237,240,.62);
+  --bone-38:rgba(237,237,240,.40);
+  --bone-18:rgba(237,237,240,.18);
+  --bone-09:rgba(237,237,240,.09);
+  --scrim:rgba(8,8,10,.88);
+  --acc:#FFFFFF;
+  --acc-60:rgba(255,255,255,.60);
+  --acc-24:rgba(255,255,255,.24);
+  --glow:rgba(255,255,255,.085);
+  --sans:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;
+  --pad:22px;
+}
+[data-theme="light"]{
+  --ink:#F6F6F7;
+  --ink-2:#EFEFF1;
+  --ink-3:#E6E6E9;
+  --bone:#0C0C0E;
+  --bone-60:rgba(12,12,14,.66);
+  --bone-38:rgba(12,12,14,.44);
+  --bone-18:rgba(12,12,14,.20);
+  --bone-09:rgba(12,12,14,.11);
+  --scrim:rgba(246,246,247,.90);
+  --acc:#0C0C0E;
+  --acc-60:rgba(12,12,14,.60);
+  --acc-24:rgba(12,12,14,.24);
+  --glow:rgba(0,0,0,.055);
+}
+html{transition:background .4s ease}
+body,.mast,.sheet,.card,textarea,.fig svg{transition:background-color .4s ease,color .4s ease,border-color .4s ease}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{background:var(--ink)}
+body{
+  background:var(--ink);
+  color:var(--bone);
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:400;
+  line-height:1.6;
+  letter-spacing:-.008em;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);
+  overflow-x:hidden;
+}
+/* film grain */
+body::before{
+  content:"";position:fixed;inset:0;z-index:120;pointer-events:none;opacity:.038;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  background-size:160px 160px;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit;color:inherit}
+:focus-visible{outline:1px solid var(--acc);outline-offset:3px;border-radius:2px}
+
+/* display type — one family, weight + tracking do the work */
+.dsp{font-weight:250;letter-spacing:-.038em;font-optical-sizing:auto}
+.lbl{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+
+/* ---------- shell ---------- */
+.wrap{max-width:640px;margin:0 auto;min-height:100vh;position:relative}
+.wrap::before{
+  content:"";position:absolute;top:-220px;left:50%;transform:translateX(-50%);
+  width:820px;height:520px;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side,var(--glow),transparent 72%);
+}
+
+/* ---------- masthead ---------- */
+.mast{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--pad) 15px;
+  border-bottom:1px solid var(--bone-09);
+  position:sticky;top:0;z-index:40;
+  background:var(--scrim);
+  backdrop-filter:blur(16px) saturate(120%);
+}
+.mono{
+  font-size:15px;letter-spacing:.36em;font-weight:600;
+  padding:2px 0 2px 2px;line-height:1;
+  background:linear-gradient(96deg,var(--bone) 12%,var(--bone-38) 42%,var(--bone) 62%,var(--bone-38) 92%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmerText 7s linear infinite;
+}
+@keyframes shimmerText{from{background-position:120% 0}to{background-position:-120% 0}}
+.mast-right{display:flex;gap:6px;align-items:center}
+.chip{
+  font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  color:var(--bone-60);border:1px solid var(--bone-18);
+  padding:7px 11px;border-radius:100px;white-space:nowrap;
+}
+.chip:active{color:var(--bone);border-color:var(--bone-38)}
+.chip.icon{padding:6px 9px;display:flex;align-items:center}
+.chip.icon svg{display:block}
+
+/* ---------- hero ---------- */
+.hero{padding:44px var(--pad) 30px;border-bottom:1px solid var(--bone-09);position:relative;z-index:1}
+.eyebrow{
+  font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;font-weight:500;
+  color:var(--bone-38);margin-bottom:20px;display:flex;align-items:center;gap:11px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--bone-09)}
+.hero h1{
+  font-weight:250;letter-spacing:-.045em;
+  font-size:clamp(44px,13.5vw,66px);line-height:.92;
+  margin:0 0 22px;
+}
+.hero h1 span{color:var(--bone-38)}
+.meta{display:flex;flex-wrap:wrap;gap:7px 18px;font-size:11px;color:var(--bone-60);
+  letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.meta span{display:flex;align-items:center;gap:8px}
+.meta i{width:3px;height:3px;background:var(--bone-38);border-radius:50%;font-style:normal;flex:none}
+
+/* ---------- status + progress rail ---------- */
+.status{padding:16px var(--pad) 17px;border-bottom:1px solid var(--bone-09);position:relative;z-index:1}
+.statusrow{font-size:12px;letter-spacing:.01em;color:var(--bone-60);display:flex;align-items:center;gap:10px}
+.pulse{width:5px;height:5px;border-radius:50%;background:var(--bone);flex:none;
+  box-shadow:0 0 0 0 var(--acc-24);animation:pulse 2.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.rail{display:flex;gap:4px;margin-top:13px}
+.rail i{flex:1;height:2px;background:var(--bone-09);border-radius:2px;position:relative;overflow:hidden}
+.rail i.fill{background:var(--bone-38)}
+.rail i.now{background:var(--bone-09)}
+.rail i.now::after{content:"";position:absolute;inset:0;background:var(--acc);
+  transform:translateX(-100%);animation:railRun 2.6s cubic-bezier(.5,0,.5,1) infinite}
+@keyframes railRun{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+
+/* ---------- day ledger ---------- */
+.ledger{padding:6px 0 0;position:relative;z-index:1}
+.plate{
+  display:block;width:100%;text-align:left;
+  padding:24px var(--pad);
+  border-bottom:1px solid var(--bone-09);
+  position:relative;overflow:hidden;
+  font:inherit;color:inherit;background:none;border-left:0;border-right:0;border-top:0;
+  cursor:pointer;
+}
+.plate::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--bone-09),transparent 62%);
+  opacity:0;transition:opacity .3s ease;
+}
+.plate:hover::before{opacity:1}
+.plate-top{display:flex;align-items:baseline;gap:15px;margin-bottom:6px}
+.num{
+  font-size:36px;line-height:.86;font-weight:200;letter-spacing:-.05em;
+  color:var(--bone-18);flex:none;min-width:50px;font-variant-numeric:tabular-nums;
+}
+.plate.open .num,.plate.today .num{color:var(--bone-38)}
+.plate.today .num{color:var(--bone)}
+.plate-body{flex:1;min-width:0}
+.dayname{
+  font-size:25px;line-height:1.1;font-weight:300;letter-spacing:-.035em;
+  margin:0 0 6px;color:var(--bone-38);
+}
+.plate.open .dayname,.plate.done .dayname{color:var(--bone)}
+.daydate{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+.plate-foot{
+  display:flex;align-items:center;gap:10px;margin-top:15px;padding-left:65px;
+  font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+}
+.plate.open .plate-foot{color:var(--bone-60)}
+.cut{flex:1;height:1px;background:var(--bone-09);position:relative}
+.plate.open .cut::after{content:"";position:absolute;left:0;top:0;height:1px;width:34px;background:var(--bone-38)}
+.seal{display:flex;align-items:center;gap:7px}
+.seal svg{opacity:.5}
+.today-tag{
+  display:inline-block;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink);background:var(--bone);padding:3px 8px;border-radius:2px;
+  margin-left:10px;vertical-align:middle;font-weight:600;
+}
+
+/* ============================================================
+   CERTIFICATE — the object at the end of the week
+   ============================================================ */
+.certblock{padding:52px var(--pad) 40px;border-top:1px solid var(--bone-09);position:relative;z-index:1}
+.certblock .eyebrow{margin-bottom:14px}
+.certblock h2{font-size:clamp(30px,9vw,42px);font-weight:250;letter-spacing:-.045em;
+  line-height:.98;margin:0 0 6px}
+.certblock h2 span{color:var(--bone-38)}
+.certblock .sub{font-size:13px;color:var(--bone-60);line-height:1.62;margin:14px 0 0;max-width:44ch}
+
+.cert-stage{
+  container-type:inline-size;
+  perspective:1500px;perspective-origin:50% 42%;
+  padding:38px 0 8px;cursor:pointer;
+}
+.cert-rotor{
+  position:relative;transform-style:preserve-3d;
+  animation:certTurn 15s cubic-bezier(.45,0,.55,1) infinite;
+  will-change:transform;
+}
+.cert-rotor.hold{animation:none;transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));
+  transition:transform .16s ease-out}
+@keyframes certTurn{
+  0%{transform:rotateY(-21deg) rotateX(7deg)}
+  50%{transform:rotateY(21deg) rotateX(-3deg)}
+  100%{transform:rotateY(-21deg) rotateX(7deg)}
+}
+.cert-face{position:relative;transition:opacity .9s ease,filter .9s ease}
+.cert-face.lit{
+  position:absolute;inset:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(102deg,transparent 39%,#000 46.5%,#000 52%,transparent 60%);
+          mask-image:linear-gradient(102deg,transparent 39%,#000 46.5%,#000 52%,transparent 60%);
+  -webkit-mask-size:280% 100%;mask-size:280% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  animation:certSweep 6.4s cubic-bezier(.6,0,.4,1) infinite;
+  filter:brightness(1.75) contrast(1.04);
+}
+@keyframes certSweep{
+  0%{-webkit-mask-position:100% 0;mask-position:100% 0}
+  62%,100%{-webkit-mask-position:0% 0;mask-position:0% 0}
+}
+.cert-glare{
+  position:absolute;inset:-2%;pointer-events:none;border-radius:6px;
+  background:linear-gradient(102deg,transparent 42%,rgba(255,255,255,.30) 49%,rgba(255,255,255,.06) 53%,transparent 60%);
+  background-size:280% 100%;mix-blend-mode:screen;
+  animation:glareSweep 6.4s cubic-bezier(.6,0,.4,1) infinite;
+}
+@keyframes glareSweep{
+  0%{background-position:100% 0}
+  62%,100%{background-position:0% 0}
+}
+.cert-shadow{
+  height:26px;margin:6px 8% 0;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent 72%);
+  filter:blur(7px);opacity:.85;
+}
+[data-theme="light"] .cert-shadow{background:radial-gradient(closest-side,rgba(0,0,0,.32),transparent 72%)}
+
+/* sealed vs revealed */
+.cert-stage .cert-face:not(.lit){opacity:.10;filter:saturate(0) brightness(.85)}
+.cert-stage.on .cert-face:not(.lit){opacity:1;filter:none}
+.cert-stage.on .cert-face.lit{filter:brightness(1.5);opacity:.85}
+
+/* the card itself */
+.cert{
+  position:relative;width:100%;aspect-ratio:1.44/1;border-radius:5px;overflow:hidden;
+  font-size:13px;font-size:clamp(8.5px,2.72cqi,17px);
+  background:
+    radial-gradient(130% 90% at 18% -10%,rgba(255,255,255,.13),transparent 58%),
+    radial-gradient(120% 120% at 100% 120%,rgba(255,255,255,.07),transparent 55%),
+    linear-gradient(158deg,#17171B 0%,#08080A 52%,#131317 100%);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 44px 70px -34px rgba(0,0,0,.95),0 2px 0 rgba(255,255,255,.05) inset;
+  color:#EDEDF0;
+  padding:1.9em 2.1em 1.7em;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.cert-frame{position:absolute;inset:.75em;border:1px solid rgba(255,255,255,.12);border-radius:2px;pointer-events:none}
+.cert-frame::before,.cert-frame::after{
+  content:"";position:absolute;width:1.1em;height:1.1em;border:1px solid rgba(255,255,255,.30)}
+.cert-frame::before{top:-.28em;left:-.28em;border-right:0;border-bottom:0}
+.cert-frame::after{bottom:-.28em;right:-.28em;border-left:0;border-top:0}
+.cert-grid{
+  position:absolute;inset:0;pointer-events:none;opacity:.85;
+  background-image:
+    repeating-linear-gradient(118deg,rgba(255,255,255,.05) 0 1px,transparent 1px 6px),
+    repeating-radial-gradient(circle at 84% 128%,rgba(255,255,255,.055) 0 1px,transparent 1px 9px);
+  -webkit-mask-image:radial-gradient(125% 105% at 46% -8%,#000 26%,transparent 82%);
+          mask-image:radial-gradient(125% 105% at 46% -8%,#000 26%,transparent 82%);
+}
+.cert-top,.cert-bot{display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:2}
+.cert-top{align-items:center}
+.cert-mark{font-size:.86em;letter-spacing:.42em;font-weight:600;
+  background:linear-gradient(100deg,#fff 10%,#8B8B93 45%,#fff 70%,#7E7E86 95%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.cert-ser{font-size:.62em;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,237,240,.42);font-weight:500}
+.cert-mid{position:relative;z-index:2;text-align:center;padding:.2em 0 .1em}
+.cert-kicker{font-size:.6em;letter-spacing:.36em;text-transform:uppercase;color:rgba(237,237,240,.46);
+  font-weight:500;margin-bottom:1.05em}
+.cert-name{
+  font-size:2.5em;line-height:1;font-weight:250;letter-spacing:-.035em;
+  background:linear-gradient(96deg,#fff 8%,#9A9AA2 38%,#fff 58%,#8E8E96 88%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  animation:shimmerText 9s linear infinite;
+}
+.cert-name.blank{color:rgba(237,237,240,.24);background:none;-webkit-text-fill-color:currentColor;
+  font-weight:200;animation:none;border-bottom:1px dashed rgba(255,255,255,.18);
+  display:inline-block;padding:0 .35em .06em}
+.cert-rule{height:1px;margin:.95em auto .8em;width:38%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent)}
+.cert-course{font-size:.86em;font-weight:400;letter-spacing:-.01em;color:rgba(237,237,240,.9)}
+.cert-sub{font-size:.58em;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,237,240,.38);
+  margin-top:.7em;font-weight:500}
+.cert-col{display:flex;flex-direction:column;gap:.3em;min-width:0}
+.cert-col.r{text-align:right}
+.cert-sigline{font-size:.82em;font-weight:300;letter-spacing:.02em;color:rgba(237,237,240,.88);
+  padding-bottom:.32em;border-bottom:1px solid rgba(255,255,255,.16)}
+.cert-sigcap{font-size:.52em;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,237,240,.34);font-weight:500}
+.cert-seal{width:4.6em;flex:none;margin:0 .6em;opacity:.92}
+.cert-seal svg{display:block;width:100%;height:auto}
+
+.cert-caption{
+  display:flex;align-items:center;gap:10px;margin-top:22px;
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+}
+.cert-caption b{color:var(--bone-60);font-weight:500}
+.cert-caption .dot{width:4px;height:4px;border-radius:50%;background:var(--bone-38);flex:none}
+
+.namefield{display:block;margin-top:26px}
+.namefield span{display:block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--bone-38);margin-bottom:9px;font-weight:500}
+.namefield input{
+  width:100%;background:var(--ink-2);border:1px solid var(--bone-09);border-radius:3px;
+  padding:14px 16px;font-size:15px;font-weight:300;letter-spacing:-.02em;color:var(--bone);
+}
+.namefield input::placeholder{color:var(--bone-38)}
+.namefield input:focus{outline:none;border-color:var(--bone-18)}
+
+.sitefoot{
+  padding:34px var(--pad) 46px;border-top:1px solid var(--bone-09);
+  display:flex;justify-content:space-between;gap:14px;position:relative;z-index:1;
+  font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+}
+
+/* ---------- day detail ---------- */
+.sheet{
+  position:fixed;inset:0;z-index:60;background:var(--ink);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transform:translateY(100%);transition:transform .34s cubic-bezier(.3,.7,.25,1);
+  visibility:hidden;
+}
+.sheet.up{transform:translateY(0);visibility:visible}
+.sheet-inner{max-width:640px;margin:0 auto;padding-bottom:70px}
+.sheet-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px var(--pad);border-bottom:1px solid var(--bone-09);
+  position:sticky;top:0;background:var(--scrim);backdrop-filter:blur(16px);z-index:5;
+}
+.back{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-60);
+  display:flex;align-items:center;gap:9px;font-weight:500}
+.sheet-day{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+
+.sheet-head{padding:36px var(--pad) 26px;border-bottom:1px solid var(--bone-09)}
+.sheet-head h2{font-weight:250;font-size:clamp(34px,10.5vw,50px);letter-spacing:-.045em;
+  line-height:.98;margin:0 0 14px}
+.sheet-head .daydate{font-size:10px}
+
+/* tabs */
+.tabs{
+  display:flex;gap:0;border-bottom:1px solid var(--bone-09);
+  position:sticky;top:53px;background:var(--scrim);backdrop-filter:blur(16px);z-index:4;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  padding:15px 11px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  color:var(--bone-38);white-space:nowrap;flex:none;position:relative;
+}
+.tab.on{color:var(--bone)}
+
+.pane{display:none;padding:32px var(--pad) 46px;animation:fade .3s ease}
+.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* schedule */
+.slot{display:flex;gap:17px;padding:16px 0;border-bottom:1px solid var(--bone-09)}
+.slot:last-child{border-bottom:0}
+.slot-time{
+  font-size:10.5px;letter-spacing:.1em;color:var(--bone-38);flex:none;width:58px;padding-top:5px;
+  font-variant-numeric:tabular-nums;font-weight:500;text-transform:uppercase;
+}
+.slot-name{font-size:20px;line-height:1.22;margin:0 0 4px;font-weight:300;letter-spacing:-.03em}
+.slot-note{font-size:12.5px;color:var(--bone-60);line-height:1.55}
+.slot.break .slot-name{color:var(--bone-38);font-size:17px;font-weight:200}
+
+/* generic blocks */
+.lede{font-size:21px;line-height:1.42;font-weight:250;letter-spacing:-.03em;
+  color:var(--bone-60);margin:0 0 30px}
+.lede em{font-style:normal;color:var(--bone)}
+.h3{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+  margin:38px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--bone-09)}
+.h3:first-child{margin-top:0}
+
+.card{border:1px solid var(--bone-09);border-radius:4px;padding:22px;margin-bottom:14px;
+  background:linear-gradient(170deg,var(--ink-3),var(--ink-2))}
+.card h4{font-size:22px;font-weight:300;letter-spacing:-.035em;margin:0 0 10px;line-height:1.14}
+.card p{margin:0 0 10px;font-size:13.5px;color:var(--bone-60);line-height:1.62}
+.card p:last-child{margin-bottom:0}
+.tagline{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);
+  margin-bottom:10px;font-weight:500}
+
+ul.list{margin:0;padding:0;list-style:none}
+ul.list li{position:relative;padding:0 0 12px 20px;font-size:13.5px;color:var(--bone-60);line-height:1.6}
+ul.list li::before{content:"";position:absolute;left:2px;top:9px;width:7px;height:1px;background:var(--bone-38)}
+ul.list li b{color:var(--bone);font-weight:500}
+
+.steps{counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:0 0 20px 46px;font-size:13.5px;color:var(--bone-60)}
+.steps li::before{
+  content:counter(s,decimal-leading-zero);position:absolute;left:0;top:-1px;
+  font-size:17px;font-weight:200;color:var(--bone-38);font-variant-numeric:tabular-nums;
+}
+.steps li b{display:block;color:var(--bone);font-size:19px;font-weight:300;letter-spacing:-.03em;
+  margin-bottom:4px;line-height:1.2}
+
+.pull{
+  border-left:1px solid var(--bone-18);padding:2px 0 2px 19px;margin:28px 0;
+  font-size:21px;line-height:1.36;font-weight:250;letter-spacing:-.03em;
+}
+
+/* diagrams */
+.fig{margin:0 0 28px}
+.fig svg{width:100%;height:auto;display:block;border:1px solid var(--bone-09);border-radius:4px;
+  background:linear-gradient(170deg,var(--ink-3),var(--ink-2))}
+.cap{font-size:11px;color:var(--bone-38);margin-top:10px;letter-spacing:0}
+
+/* notes */
+.notewrap{position:relative}
+textarea{
+  width:100%;min-height:290px;background:var(--ink-2);color:var(--bone);
+  border:1px solid var(--bone-09);border-radius:4px;padding:18px;
+  font-family:var(--sans);font-size:14.5px;font-weight:300;line-height:1.72;resize:vertical;
+  background-image:repeating-linear-gradient(transparent,transparent 24.9px,var(--bone-09) 24.9px,var(--bone-09) 25px);
+  background-attachment:local;
+}
+textarea::placeholder{color:var(--bone-38)}
+textarea:focus{outline:none;border-color:var(--bone-18)}
+.saved{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+  margin-top:12px;display:flex;align-items:center;gap:8px;height:14px}
+.saved.flash{color:var(--bone)}
+
+/* prompts */
+.prompt{border:1px dashed var(--bone-18);border-radius:4px;padding:15px 17px;margin-bottom:11px;
+  font-size:17px;line-height:1.38;color:var(--bone-60);font-weight:300;letter-spacing:-.025em}
+
+/* buttons */
+.btn{
+  display:block;width:100%;text-align:center;padding:16px;
+  border:1px solid var(--bone-18);color:var(--bone);border-radius:3px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:11px;font-weight:500;
+}
+.btn:active{background:var(--bone-09)}
+.btn.solid{background:var(--bone);color:var(--ink);border-color:var(--bone);font-weight:600}
+.btn.solid:active{opacity:.85}
+.btn.ghost{border-color:var(--bone-09);color:var(--bone-38)}
+
+/* locked pane */
+.emptystate{text-align:center;padding:72px 10px}
+.emptystate svg{opacity:.28;margin-bottom:22px}
+.emptystate h4{font-size:25px;font-weight:250;letter-spacing:-.035em;margin:0 0 10px}
+.emptystate p{font-size:13px;color:var(--bone-38);max-width:280px;margin:0 auto;line-height:1.6}
+
+/* logistics + export */
+.info-row{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--bone-09)}
+.info-row:last-child{border-bottom:0}
+.info-k{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+  flex:none;width:78px;padding-top:5px}
+.info-v{font-size:14px;line-height:1.55;font-weight:300}
+.info-v small{display:block;font-size:12px;color:var(--bone-60);margin-top:4px}
+
+.swatches{display:flex;gap:9px;margin-top:12px}
+.sw{flex:1;height:52px;border-radius:2px;border:1px solid var(--bone-18);position:relative}
+.sw span{position:absolute;bottom:-19px;left:0;font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--bone-38);font-weight:500}
+
+.footnote{font-size:11.5px;color:var(--bone-38);line-height:1.65;margin-top:32px;
+  padding-top:20px;border-top:1px solid var(--bone-09)}
+
+/* ---------- motion ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes riseSm{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes wipe{from{width:0}to{width:34px}}
+@keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+
+.enter{opacity:0;animation:rise .78s cubic-bezier(.16,.72,.24,1) forwards;animation-delay:var(--d,0ms)}
+.enter-sm{opacity:0;animation:riseSm .55s cubic-bezier(.16,.72,.24,1) forwards;animation-delay:var(--d,0ms)}
+
+.plate{opacity:0;animation:rise .62s cubic-bezier(.16,.72,.24,1) forwards;animation-delay:calc(var(--i,0)*72ms + 120ms)}
+.plate:active{transform:scale(.988)}
+.plate{transition:background .22s ease,transform .18s ease}
+.plate.open .cut::after{animation:wipe .9s cubic-bezier(.16,.72,.24,1) forwards;animation-delay:calc(var(--i,0)*72ms + 420ms)}
+
+.fig svg [stroke]:not([stroke-dasharray]){stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.15s cubic-bezier(.3,.7,.3,1) forwards;animation-delay:var(--dd,120ms)}
+.fig svg [stroke-dasharray]{opacity:0;animation:riseSm .6s ease forwards;animation-delay:calc(var(--dd,120ms) + 700ms)}
+.fig svg text{opacity:0;animation:riseSm .5s ease forwards;animation-delay:calc(var(--dd,120ms) + 520ms)}
+
+.tab{transition:color .25s ease}
+.tab::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:1px;background:var(--bone);
+  transform:scaleX(0);transform-origin:left;transition:transform .34s cubic-bezier(.16,.72,.24,1)}
+.tab.on::after{transform:scaleX(1)}
+
+.chip{transition:color .2s ease,border-color .2s ease,transform .18s ease}
+.chip:active{transform:scale(.94)}
+.btn{transition:background .22s ease,color .22s ease,transform .16s ease,opacity .2s ease}
+.btn:active{transform:scale(.985)}
+.mono{transition:transform .18s ease}
+.mono:active{transform:scale(.92)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0ms !important;
+    transition-duration:.01ms !important;animation-iteration-count:1 !important}
+  .enter,.enter-sm,.plate,.fig svg text{opacity:1}
+  .fig svg [stroke]{stroke-dashoffset:0}
+  .fig svg [stroke-dasharray]{opacity:1}
+  .plate.open .cut::after{width:34px}
+  .cert-rotor{transform:rotateY(-8deg) rotateX(3deg)}
+  .cert-stage .cert-face:not(.lit){opacity:.34;filter:none}
+  .cert-face.lit,.cert-glare{display:none}
+  .mono,.cert-name{-webkit-text-fill-color:currentColor;color:var(--bone);background:none}
+}
+
+.toast{
+  position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
+  background:var(--bone);color:var(--ink);padding:12px 20px;border-radius:3px;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  opacity:0;pointer-events:none;transition:all .28s ease;z-index:99;
+}
+.toast.up{opacity:1;transform:translate(-50%,0)}
+</style>
+
+<div class="wrap">
+
+  <div class="mast">
+    <button class="mono" id="mono">LTC</button>
+    <div class="mast-right">
+      <button class="chip icon" id="btnTheme" aria-label="Switch between light and dark" title="Light / dark"></button>
+      <button class="chip" id="btnInfo">Venue</button>
+      <button class="chip" id="btnExport">My notes</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">Student companion</div>
+    <h1>The Miami<br>Intensive <span>—</span><br>Five Days</h1>
+    <div class="meta">
+      <span><i></i>Aug 23–27, 2026</span>
+      <span><i></i>10:00 – 5:00 daily</span>
+      <span><i></i>Wynwood, Miami</span>
+    </div>
+  </div>
+
+  <div class="status">
+    <div class="statusrow"><span class="pulse"></span><span id="statusText">—</span></div>
+    <div class="rail" id="rail"></div>
+  </div>
+
+  <div class="ledger" id="ledger"></div>
+
+  <section class="certblock">
+    <div class="eyebrow">Day 05 · 4:15pm</div>
+    <h2>What you<br>leave <span>with</span></h2>
+    <div class="cert-stage" id="certStage" role="button" tabindex="0" aria-label="Preview your certificate">
+      <div class="cert-rotor" id="certRotor">
+        <div class="cert-face" id="certBase"></div>
+        <div class="cert-face lit" id="certLit" aria-hidden="true"></div>
+        <div class="cert-glare"></div>
+      </div>
+      <div class="cert-shadow"></div>
+    </div>
+    <div class="cert-caption" id="certCap"></div>
+    <p class="sub">Signed, numbered and handed to you at the close on Thursday. Put your name on it now — it will read exactly like this.</p>
+    <label class="namefield">
+      <span>Name as it should appear</span>
+      <input id="certName" type="text" maxlength="26" placeholder="e.g. Marcus Bell" autocomplete="name" spellcheck="false">
+    </label>
+  </section>
+
+  <div class="sitefoot">
+    <span>Learn to Cut</span>
+    <span>Wynwood · MMXXVI</span>
+  </div>
+
+</div>
+
+<div class="sheet" id="sheet"><div class="sheet-inner" id="sheetInner"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STORAGE — works hosted (localStorage), inside Claude
+   (window.storage), and falls back to memory if both fail.
+   ============================================================ */
+const Store = (() => {
+  const mem = {};
+  const hasWS = typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+  let ls = null;
+  try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); ls = localStorage; } catch(e){}
+  return {
+    async get(k){
+      if (hasWS){ try { const r = await window.storage.get(k); return r ? r.value : (mem[k] ?? null); } catch(e){ return mem[k] ?? null; } }
+      if (ls){ try { return ls.getItem(k); } catch(e){} }
+      return mem[k] ?? null;
+    },
+    async set(k,v){
+      mem[k] = v;
+      if (hasWS){ try { await window.storage.set(k,v); return; } catch(e){} }
+      if (ls){ try { ls.setItem(k,v); } catch(e){} }
+    }
+  };
+})();
+
+/* ============================================================
+   EVENT CONFIG
+   ============================================================ */
+const YEAR = 2026, MONTH = 7; // JS month 7 = August
+const START_DAY = 23;
+const RECAP_HOUR = 17; // recaps unlock 5:00pm local
+
+/* ============================================================
+   DIAGRAMS
+   ============================================================ */
+const D = {};
+
+D.headZones = `<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Head zones map">
+<g fill="none" stroke="var(--bone)" stroke-opacity=".45" stroke-width="1.2">
+<path d="M200 34c-44 0-74 30-76 74-1 20 2 36 8 52 6 17 16 30 30 40 12 9 24 14 38 14s26-5 38-14c14-10 24-23 30-40 6-16 9-32 8-52-2-44-32-74-76-74z"/>
+</g>
+<g stroke="var(--bone)" stroke-opacity=".9" stroke-width="1.1" fill="none">
+<path d="M126 96h148"/><path d="M124 138h152"/><path d="M132 180h136"/>
+<path d="M200 34v180"/>
+</g>
+<g fill="var(--bone)" font-family="DM Sans,sans-serif" font-size="10" font-weight="500" letter-spacing="1.8">
+<text x="298" y="72" fill-opacity=".85">TOP</text>
+<text x="298" y="120" fill-opacity=".85">CORNER</text>
+<text x="298" y="162" fill-opacity=".85">SIDE</text>
+<text x="298" y="204" fill-opacity=".85">NAPE</text>
+</g>
+<g stroke="var(--bone)" stroke-opacity=".22" stroke-width="1">
+<path d="M276 68h16"/><path d="M278 116h12"/><path d="M280 158h12"/><path d="M272 200h20"/>
+</g>
+<g fill="var(--bone)" fill-opacity=".55" font-family="DM Sans,sans-serif" font-size="13" font-weight="300">
+<text x="150" y="90">01</text><text x="150" y="132">02</text><text x="152" y="174">03</text><text x="158" y="208">04</text>
+</g>
+</svg>`;
+
+D.coreShapes = `<svg viewBox="0 0 400 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Core shapes: round, square, triangle">
+<g fill="none" stroke="var(--bone)" stroke-opacity=".85" stroke-width="1.3">
+<circle cx="80" cy="72" r="40"/>
+<rect x="160" y="32" width="80" height="80"/>
+<path d="M320 32l42 80h-84z"/>
+</g>
+<g fill="var(--bone)" fill-opacity=".7" font-family="DM Sans,sans-serif" font-size="9.5" font-weight="500" letter-spacing="2" text-anchor="middle">
+<text x="80" y="142">ROUND</text><text x="200" y="142">SQUARE</text><text x="320" y="142">TRIANGLE</text>
+</g>
+<g fill="var(--bone)" fill-opacity=".35" font-family="DM Sans,sans-serif" font-size="9" letter-spacing=".4" text-anchor="middle">
+<text x="80" y="158">soft / curved</text><text x="200" y="158">strong / flat</text><text x="320" y="158">tapered</text>
+</g>
+</svg>`;
+
+D.faceTypes = `<svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five face types">
+<g fill="none" stroke="var(--bone)" stroke-opacity=".40" stroke-width="1.2">
+<ellipse cx="42" cy="60" rx="25" ry="36"/>
+<circle cx="118" cy="60" r="32"/>
+<rect x="166" y="29" width="60" height="62" rx="5"/>
+<rect x="252" y="22" width="40" height="76" rx="18"/>
+<path d="M350 24c-19 0-33 13-33 30 0 22 15 33 33 46 18-13 33-24 33-46 0-17-14-30-33-30z"/>
+</g>
+<g fill="var(--bone)" fill-opacity=".7" font-family="DM Sans,sans-serif" font-size="9" font-weight="500" letter-spacing="1.8" text-anchor="middle">
+<text x="42" y="122">OVAL</text><text x="118" y="122">ROUND</text><text x="196" y="122">SQUARE</text><text x="272" y="122">OBLONG</text><text x="350" y="122">HEART</text>
+</g>
+<g stroke="var(--bone)" stroke-opacity=".95" stroke-width="1.2" stroke-dasharray="3 3" fill="none">
+<ellipse cx="42" cy="60" rx="25" ry="36"/>
+</g>
+<text x="42" y="139" fill="var(--bone)" fill-opacity=".6" font-family="DM Sans,sans-serif" font-size="10" text-anchor="middle">the target</text>
+</svg>`;
+
+D.consult = `<svg viewBox="0 0 400 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Consultation sequence">
+<g stroke="var(--bone)" stroke-opacity=".45" stroke-width="1.1" fill="none"><path d="M42 62h316"/></g>
+<g fill="var(--ink)" stroke="var(--bone)" stroke-opacity=".9" stroke-width="1.2">
+<circle cx="42" cy="62" r="9"/><circle cx="147" cy="62" r="9"/><circle cx="253" cy="62" r="9"/><circle cx="358" cy="62" r="9"/>
+</g>
+<g fill="var(--bone)" fill-opacity=".6" font-family="DM Sans,sans-serif" font-size="11" font-weight="300" text-anchor="middle">
+<text x="42" y="43">01</text><text x="147" y="43">02</text><text x="253" y="43">03</text><text x="358" y="43">04</text>
+</g>
+<g fill="var(--bone)" fill-opacity=".78" font-family="DM Sans,sans-serif" font-size="9" font-weight="500" letter-spacing="1.4" text-anchor="middle">
+<text x="42" y="90">PREFERENCE</text><text x="147" y="90">SUITABILITY</text><text x="253" y="90">RECOMMEND</text><text x="358" y="90">CONCLUDE</text>
+</g>
+<g fill="var(--bone)" fill-opacity=".34" font-family="DM Sans,sans-serif" font-size="8.5" text-anchor="middle">
+<text x="42" y="106">what they want</text><text x="147" y="106">what fits</text><text x="253" y="106">what you advise</text><text x="358" y="106">agreed image</text>
+</g>
+</svg>`;
+
+D.habit = `<svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cue, routine, reward loop">
+<g fill="none" stroke="var(--bone)" stroke-opacity=".55" stroke-width="1.2">
+<path d="M200 34a52 52 0 1 1-.1 0" stroke-dasharray="4 5"/>
+</g>
+<g fill="var(--ink)" stroke="var(--bone)" stroke-opacity=".9" stroke-width="1.3">
+<circle cx="200" cy="34" r="8"/><circle cx="252" cy="112" r="8"/><circle cx="148" cy="112" r="8"/>
+</g>
+<g fill="var(--bone)" fill-opacity=".8" font-family="DM Sans,sans-serif" font-size="9.5" font-weight="500" letter-spacing="1.8" text-anchor="middle">
+<text x="200" y="20">CUE</text><text x="286" y="134">ROUTINE</text><text x="114" y="134">REWARD</text>
+</g>
+</svg>`;
+
+/* ============================================================
+   CONTENT
+   ============================================================ */
+const DAYS = [
+  {
+    n:1, date:'Sunday · August 23', title:'Identity &amp; Intention',
+    lede:'Before the hands, the head. Day 1 is about who you decide to be for the rest of the week — and the language you will use once you are in front of a client.',
+    schedule:[
+      {t:'10:00', n:'Opening', d:'Where we are going and what this week asks of you.'},
+      {t:'10:45', n:'The Gap Exercise', d:'Written work. Where you are versus where you say you want to be.'},
+      {t:'11:30', n:'Scarcity vs Abundance', d:'Energy states, the levels map, and how each one shows up in the chair.'},
+      {t:'12:30', n:'Hardship tools', d:'Five practical tools for getting your state back.'},
+      {t:'1:00',  n:'Lunch', d:'', brk:true},
+      {t:'2:00',  n:'The Language of Hair', d:'Naming what you see so you can talk about it precisely.'},
+      {t:'2:45',  n:'Face Shapes &amp; Head Zones', d:'The facial balance framework and the head map.'},
+      {t:'3:45',  n:'The Consultation System', d:'Preference, suitability, recommendation, conclusion.'},
+      {t:'4:30',  n:'Mannequin intro', d:'Setting up for the week on the head.'},
+      {t:'4:50',  n:'Day 1 exam', d:'Short written check on the day.'}
+    ],
+    work:[
+      {tag:'Exercise 01', h:'The Gap Exercise', p:['Two honest columns: the barber you are on paper right now, and the barber you have been telling people you are going to be. The distance between them is the only thing this week is trying to close.','Alexi works through his own example first. Yours goes in the workbook — bring it to the afternoon.'],
+       prompts:['Where am I actually, today?','Where have I been saying I am headed?','What has kept the gap open?']},
+      {tag:'Closing · 5 minutes', h:'The Signature Card', p:['Not a summary of the day. One decision, in one sentence, that you sign your name under.'],
+       prompts:['Starting today, I am the barber who —']},
+      {tag:'Exam', h:'Day 1 check', p:['Short written check covering the language of hair, the head zones and the consultation sequence. Not graded against anyone else.']}
+    ],
+    ref:[
+      {h:'The head zones', fig:D.headZones, cap:'Four zones. Every conversation about a cut starts by naming which one you are in.'},
+      {h:'Core shapes', fig:D.coreShapes, cap:'Round, square, triangle — the three shapes underneath every haircut.'},
+      {h:'Face types', fig:D.faceTypes, cap:'Five types. The oval is the balance you are working toward, not a sixth option.'},
+      {h:'The six zones you score', list:['<b>Forehead</b> — height and width','<b>Cheekbones</b> — the widest horizontal','<b>Jawline</b> — soft, square or tapered','<b>Chin</b> — length and projection','<b>Temples / side width</b>','<b>Hairline height</b>'], note:'Score each: <b>+1</b> dominant · <b>0</b> balanced · <b>−1</b> lacking. Reduce what is dominant, add to what is lacking.'},
+      {h:'The consultation sequence', fig:D.consult, cap:'Clients are paying for certainty, not a haircut.'},
+      {h:'Changing habits', fig:D.habit, cap:'Cue → routine → reward. The loop you will use on your own practice this week.'}
+    ],
+    recap:['The week does not start with a technique. It starts with a decision, and you signed it.','The gap you wrote down this morning is the reference point for everything from Monday onward — the fades, the scissor work, the way you talk to a client. Come back to it.','You now have language: zones, core shapes, the six facial zones and a scoring system, and a four-step consultation you can repeat instead of improvise.','Tomorrow the work moves to your hands.']
+  },
+  {
+    n:2, date:'Monday · August 24', title:'Graduation &amp; Fades',
+    lede:'Weight, and where you decide to put it. The first of the three techniques, taken to the head.',
+    schedule:[
+      {t:'10:00', n:'Morning theory', d:'Graduation, the mechanics behind it, and the degree ranges.'},
+      {t:'1:00',  n:'Lunch', d:'', brk:true},
+      {t:'2:00',  n:'Chair time', d:'On the head, with correction.'},
+      {t:'4:45',  n:'Close', d:'Day check and set-up for tomorrow.'}
+    ],
+    scaffold:true,
+    work:[{tag:'To be confirmed', h:'Exercises land here', p:['The written work for Day 2 has not been added yet. Once Alexi confirms it, it appears in this tab automatically — nothing for you to install or update.']}],
+    ref:[
+      {h:'The three techniques', steps:[
+        ['Graduation','Builds weight. Stacked, with a visible corner.'],
+        ['Layering','Removes weight. Length becomes consistent through the shape.'],
+        ['Line','Holds the perimeter. One length, no elevation.']]},
+      {h:'The three mechanics', list:['<b>Cutting line</b> — the angle you cut on','<b>Over-direction</b> — where you pull the hair before you cut it','<b>Elevation</b> — how far off the head you lift'], note:'Every result on the head is those three, in some combination. Nothing else.'},
+      {h:'The head zones', fig:D.headZones, cap:'Back to the map — graduation reads differently in every zone.'}
+    ],
+    recap:['Graduation is weight. Once you can see where the weight sits, you can see why a cut is not working.','The three mechanics — cutting line, over-direction, elevation — are the whole vocabulary. If a shape is wrong, one of those three is wrong.','Connection and disconnection are a decision, not an accident.']
+  },
+  {
+    n:3, date:'Tuesday · August 25', title:'Layering &amp; Scissor Work',
+    lede:'Taking weight out, and the hand control it asks for.',
+    schedule:[
+      {t:'10:00', n:'Morning theory', d:'Layering, elevation and the scissor mechanics.'},
+      {t:'1:00',  n:'Lunch', d:'', brk:true},
+      {t:'2:00',  n:'Chair time', d:'On the head, with correction.'},
+      {t:'4:45',  n:'Close', d:'Day check.'}
+    ],
+    scaffold:true,
+    work:[{tag:'To be confirmed', h:'Exercises land here', p:['The written work for Day 3 has not been added yet.']}],
+    ref:[
+      {h:'Connection vs disconnection', list:['<b>Connected</b> — the zones flow into each other, no visible break','<b>Disconnected</b> — a deliberate break between zones','<b>The question</b> — did you choose it, or did it happen to you?']},
+      {h:'Core shapes', fig:D.coreShapes, cap:'Layering is how you move between these three.'}
+    ],
+    recap:['Layering removes weight. Graduation builds it. Most cuts are a conversation between the two.','Elevation is the variable that changes the most for the least movement of your hands.','Scissor work is a control problem before it is a technique problem.']
+  },
+  {
+    n:4, date:'Wednesday · August 26', title:'Brand &amp; Presentation',
+    lede:'The cut is one part of what a client pays for. This day is the rest of it.',
+    schedule:[
+      {t:'10:00', n:'Morning session', d:'Brand, presentation and how you are read before you speak.'},
+      {t:'1:00',  n:'Lunch', d:'', brk:true},
+      {t:'2:00',  n:'Afternoon session', d:'Applying it to your own chair and your own room.'},
+      {t:'4:45',  n:'Close', d:'Day check.'}
+    ],
+    scaffold:true,
+    work:[{tag:'To be confirmed', h:'Exercises land here', p:['The written work for Day 4 has not been added yet.']}],
+    ref:[
+      {h:'The consultation sequence', fig:D.consult, cap:'Presentation starts in the consultation, before the cape is on.'},
+      {h:'Suitability — the four questions', list:['<b>Who</b> — who is this person, what do they do','<b>What</b> — what does their hair actually do','<b>When</b> — how often will they be back','<b>Where</b> — <i>content pending from Alexi</i>'], note:'Tailoring, not controlling. You are fitting the cut to the life, not the other way around.'}
+    ],
+    recap:['Clients are not buying a haircut. They are buying certainty that they will walk out looking like the image you both agreed on.','Your brand is the gap between what you say you do and what a client actually experiences in the chair.','Presentation is a system you can repeat, the same way a fade is.']
+  },
+  {
+    n:5, date:'Thursday · August 27', title:'Full Cut Integration',
+    lede:'Everything, on one head, start to finish. Then you leave with it.',
+    schedule:[
+      {t:'10:00', n:'Full cut — brief', d:'Consultation through to finish, no shortcuts.'},
+      {t:'1:00',  n:'Lunch', d:'', brk:true},
+      {t:'2:00',  n:'Full cut — execution', d:'Everything from the week, integrated.'},
+      {t:'4:15',  n:'Close &amp; graduation', d:'Certificates and final word.'}
+    ],
+    scaffold:true,
+    work:[{tag:'To be confirmed', h:'Final assessment', p:['Details for the final cut brief have not been added yet.']}],
+    ref:[
+      {h:'The whole week, in order', steps:[
+        ['Consult','Preference, suitability, recommendation, conclusion.'],
+        ['Read the head','Zones, face type, the six scored areas.'],
+        ['Choose the shape','Round, square or triangle — and say why.'],
+        ['Execute','Graduation, layering, line. Cutting line, over-direction, elevation.'],
+        ['Finish','Connection or disconnection — chosen, not accidental.']]},
+      {h:'The consultation sequence', fig:D.consult, cap:''}
+    ],
+    recap:['You did the whole thing on one head — consult to finish — with nobody talking you through it.','Compare the cut you did today with the gap you wrote down on Sunday morning.','The framework travels home with you. The reps do not happen here.']
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+/* BUILD MODE — every day unlocked while Tosin is still building.
+   Set to false before this goes to students, or tap the LTC monogram 5x. */
+const BUILD_UNLOCK = true;
+let override = BUILD_UNLOCK;
+let current = null;
+let saveTimer = null;
+
+function today(){ return new Date(); }
+function dayIndexNow(){
+  const now = today();
+  if (now.getFullYear() !== YEAR) return now.getFullYear() > YEAR ? 5 : 0;
+  if (now.getMonth() < MONTH) return 0;
+  if (now.getMonth() > MONTH) return 5;
+  const d = now.getDate();
+  if (d < START_DAY) return 0;
+  return Math.min(5, d - START_DAY + 1);
+}
+function stateFor(n){
+  if (override) return 'done';
+  const cur = dayIndexNow();
+  if (n < cur) return 'done';
+  if (n === cur) return 'today';
+  return 'locked';
+}
+function recapReady(n){
+  if (override) return true;
+  const cur = dayIndexNow();
+  if (n < cur) return true;
+  if (n === cur) return today().getHours() >= RECAP_HOUR;
+  return false;
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ============================================================
+   RENDER — home
+   ============================================================ */
+const lockIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10.5" width="16" height="11" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`;
+
+function renderHome(){
+  const cur = dayIndexNow();
+  const st = document.getElementById('statusText');
+  if (override){ st.innerHTML = 'Build preview — <strong style="color:var(--bone);font-weight:500">all five days unlocked.</strong> Tap the LTC mark five times for live dates.'; }
+  else if (cur === 0) st.textContent = 'Doors open Sunday 23 August, 10:00. Day titles are below — each day opens on the morning it runs.';
+  else if (cur > 5) st.textContent = 'The intensive is complete. All five days stay open here, and your notes are still yours to export.';
+  else st.innerHTML = `Day ${cur} is open — <strong style="color:var(--bone);font-weight:500">${DAYS[cur-1].title}</strong>`;
+
+  document.getElementById('rail').innerHTML = DAYS.map(d => {
+    const s = stateFor(d.n);
+    return `<i class="${s==='done'?'fill':s==='today'?'now':''}"></i>`;
+  }).join('');
+
+  document.getElementById('ledger').innerHTML = DAYS.map(d => {
+    const s = stateFor(d.n);
+    const open = s !== 'locked';
+    const foot = open
+      ? `<span>${d.schedule.length} sessions</span><span class="cut"></span><span>Open</span>`
+      : `<span class="seal">${lockIcon} Opens ${d.date.split('·')[1].trim()}</span><span class="cut"></span>`;
+    return `<div class="plate ${s} ${open?'open':''}" data-n="${d.n}" role="button" tabindex="0" style="--i:${d.n-1}">
+      <div class="plate-top">
+        <div class="num">${String(d.n).padStart(2,'0')}</div>
+        <div class="plate-body">
+          <h3 class="dayname">${d.title}${s==='today'?'<span class="today-tag">Today</span>':''}</h3>
+          <div class="daydate">${d.date}</div>
+        </div>
+      </div>
+      <div class="plate-foot">${foot}</div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.plate').forEach(p => {
+    const go = () => openDay(+p.dataset.n);
+    p.addEventListener('click', go);
+    p.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); }
+    });
+  });
+}
+
+/* ============================================================
+   THE CERTIFICATE
+   Sealed in the dark until the week is done — a light passes
+   over it every few seconds and shows you what is under there.
+   Deliberately NOT tied to the build override: tap it to hold
+   the reveal, tap again to seal it back.
+   ============================================================ */
+function sealSVG(id){
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
+    <defs><path id="arc-${id}" fill="none" d="M50 50 m-35 0 a35 35 0 1 1 70 0 a35 35 0 1 1 -70 0"/></defs>
+    <circle cx="50" cy="50" r="47" fill="none" stroke="rgba(255,255,255,.30)" stroke-width=".8"/>
+    <circle cx="50" cy="50" r="43.5" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".6"/>
+    <circle cx="50" cy="50" r="27" fill="none" stroke="rgba(255,255,255,.22)" stroke-width=".6"/>
+    <g stroke="rgba(255,255,255,.30)" stroke-width=".7">
+      <path d="M50 3.5v4M50 92.5v4M3.5 50h4M92.5 50h4"/>
+    </g>
+    <text font-family="DM Sans,sans-serif" font-size="7.4" font-weight="500" letter-spacing="1.9" fill="rgba(255,255,255,.62)">
+      <textPath href="#arc-${id}" xlink:href="#arc-${id}" startOffset="0%">LEARN TO CUT · MIAMI · FIVE DAY INTENSIVE · </textPath>
+    </text>
+    <text x="50" y="52" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="19" font-weight="200" fill="rgba(255,255,255,.92)" letter-spacing="-.5">05</text>
+    <text x="50" y="63" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="5" font-weight="500" letter-spacing="2.4" fill="rgba(255,255,255,.42)">DAYS</text>
+  </svg>`;
+}
+
+function certMarkup(name, id){
+  const n = (name||'').trim();
+  return `<div class="cert">
+    <div class="cert-grid"></div>
+    <div class="cert-frame"></div>
+    <div class="cert-top">
+      <span class="cert-mark">LTC</span>
+      <span class="cert-ser">No. 2026 · 001</span>
+    </div>
+    <div class="cert-mid">
+      <div class="cert-kicker">Certificate of completion</div>
+      <div class="cert-name${n?'':' blank'}">${n ? esc(n) : 'Your name here'}</div>
+      <div class="cert-rule"></div>
+      <div class="cert-course">The Miami Intensive — Five Days</div>
+      <div class="cert-sub">Consultation · Graduation · Layering · Line</div>
+    </div>
+    <div class="cert-bot">
+      <div class="cert-col">
+        <span class="cert-sigline">Alexi</span>
+        <span class="cert-sigcap">Instructor</span>
+      </div>
+      <div class="cert-seal">${sealSVG(id)}</div>
+      <div class="cert-col r">
+        <span class="cert-sigline">27 · 08 · 2026</span>
+        <span class="cert-sigcap">Wynwood, Miami</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+const certStage = document.getElementById('certStage');
+const certRotor = document.getElementById('certRotor');
+let certName = '';
+let certHeld = false;
+
+function certEarned(){
+  const now = today();
+  if (now.getFullYear() > YEAR) return true;
+  if (now.getFullYear() < YEAR) return false;
+  if (now.getMonth() > MONTH) return true;
+  if (now.getMonth() < MONTH) return false;
+  const d = now.getDate();
+  if (d > START_DAY + 4) return true;
+  return d === START_DAY + 4 && now.getHours() >= 16;
+}
+
+function paintCert(){
+  document.getElementById('certBase').innerHTML = certMarkup(certName,'a');
+  document.getElementById('certLit').innerHTML  = certMarkup(certName,'b');
+  const earned = certEarned();
+  certStage.classList.toggle('on', earned || certHeld);
+  document.getElementById('certCap').innerHTML = earned
+    ? `<span class="dot"></span><b>Earned</b><span>·</span><span>Thursday 27 August</span>`
+    : `<span class="dot"></span><span>Sealed until <b>27 August</b></span><span>·</span><span>${certHeld?'Tap to seal':'Tap to hold the light'}</span>`;
+}
+
+certStage.addEventListener('click', () => {
+  if (certEarned()) return;
+  certHeld = !certHeld;
+  paintCert();
+});
+certStage.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); certStage.click(); }
+});
+
+/* tilt on pointer — the card follows your finger, then goes back to its own turn */
+let holdTimer = null;
+certStage.addEventListener('pointermove', e => {
+  const r = certStage.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width  - .5;
+  const y = (e.clientY - r.top)  / r.height - .5;
+  certRotor.style.setProperty('--ry', (x * 30).toFixed(2) + 'deg');
+  certRotor.style.setProperty('--rx', (-y * 18).toFixed(2) + 'deg');
+  certRotor.classList.add('hold');
+  clearTimeout(holdTimer);
+  holdTimer = setTimeout(() => certRotor.classList.remove('hold'), 2200);
+});
+certStage.addEventListener('pointerleave', () => {
+  clearTimeout(holdTimer);
+  certRotor.classList.remove('hold');
+});
+
+const nameInput = document.getElementById('certName');
+Store.get('ltc:name').then(v => {
+  if (v){ certName = v; nameInput.value = v; }
+  paintCert();
+});
+let nameTimer = null;
+nameInput.addEventListener('input', () => {
+  certName = nameInput.value;
+  paintCert();
+  clearTimeout(nameTimer);
+  nameTimer = setTimeout(() => Store.set('ltc:name', certName), 400);
+});
+
+/* ============================================================
+   RENDER — day sheet
+   ============================================================ */
+function block(b){
+  let out = `<div class="h3">${b.h}</div>`;
+  if (b.fig) out += `<div class="fig">${b.fig}${b.cap?`<div class="cap">${b.cap}</div>`:''}</div>`;
+  if (b.list) out += `<ul class="list">${b.list.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  if (b.steps) out += `<ol class="steps">${b.steps.map(s=>`<li><b>${s[0]}</b>${s[1]}</li>`).join('')}</ol>`;
+  if (b.note) out += `<div class="pull">${b.note}</div>`;
+  return out;
+}
+
+function openDay(n){
+  const d = DAYS[n-1];
+  const s = stateFor(n);
+  current = n;
+
+  if (s === 'locked'){
+    document.getElementById('sheetInner').innerHTML = `
+      <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">Day ${n}</span></div>
+      <div class="sheet-head"><h2>${d.title}</h2><div class="daydate">${d.date}</div></div>
+      <div class="emptystate enter" style="--d:120ms">
+        ${lockIcon.replace('width="13" height="13"','width="34" height="34"')}
+        <h4>Not yet</h4>
+        <p>This day opens on ${d.date.split('·')[1].trim()} at 10:00. You will find the schedule, the exercises and the reference material here that morning.</p>
+      </div>`;
+    show();
+    return;
+  }
+
+  const tabs = [['sched','Schedule'],['work','Work'],['ref','Reference'],['notes','Notes'],['recap','Recap']];
+  document.getElementById('sheetInner').innerHTML = `
+    <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">Day ${n} of 5</span></div>
+    <div class="sheet-head"><h2>${d.title}</h2><div class="daydate">${d.date} · 10:00 – 5:00</div></div>
+    <div class="tabs">${tabs.map((t,i)=>`<button class="tab ${i===0?'on':''}" data-p="${t[0]}">${t[1]}</button>`).join('')}</div>
+
+    <div class="pane on" id="p-sched">
+      <p class="lede">${d.lede}</p>
+      ${d.schedule.map(x=>`<div class="slot ${x.brk?'break':''}">
+        <div class="slot-time">${x.t}</div>
+        <div><div class="slot-name">${x.n}</div>${x.d?`<div class="slot-note">${x.d}</div>`:''}</div>
+      </div>`).join('')}
+      ${d.scaffold?`<div class="footnote">Times for this day are the standard 10:00 – 5:00 frame. Session detail is confirmed on the morning.</div>`:''}
+    </div>
+
+    <div class="pane" id="p-work">
+      ${d.work.map(w=>`<div class="card">
+        <div class="tagline">${w.tag}</div>
+        <h4>${w.h}</h4>
+        ${w.p.map(p=>`<p>${p}</p>`).join('')}
+        ${w.prompts?w.prompts.map(q=>`<div class="prompt" style="margin-top:14px">${q}</div>`).join(''):''}
+      </div>`).join('')}
+    </div>
+
+    <div class="pane" id="p-ref">${d.ref.map(block).join('')}</div>
+
+    <div class="pane" id="p-notes">
+      <p class="lede">Your notes for this day. <em>Saved on this phone only</em> — no account, nothing sent anywhere. Export them before you leave.</p>
+      <div class="notewrap">
+        <textarea id="ta" placeholder="Start writing…"></textarea>
+        <div class="saved" id="savedMsg"></div>
+      </div>
+      <div class="footnote">Clearing your browser data will clear these notes. Use <strong style="color:var(--bone-60)">My notes</strong> at the top of the home screen to save a copy off the phone.</div>
+    </div>
+
+    <div class="pane" id="p-recap">
+      ${recapReady(n)
+        ? `<p class="lede">Day ${n}, <em>in five lines.</em></p>${d.recap.map(r=>`<div class="pull" style="margin:0 0 22px">${r}</div>`).join('')}`
+        : `<div class="emptystate">${lockIcon.replace('width="13" height="13"','width="34" height="34"')}<h4>After 5:00</h4><p>The recap for this day unlocks when the day is done.</p></div>`}
+    </div>`;
+
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    const pane = document.getElementById('p-'+t.dataset.p);
+    pane.classList.add('on');
+    primePane(pane);
+    document.getElementById('sheet').scrollTop = 0;
+  }));
+  primePane(document.getElementById('p-sched'));
+
+  const ta = document.getElementById('ta');
+  Store.get('ltc:notes:'+n).then(v => { if (v) ta.value = v; });
+  ta.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      await Store.set('ltc:notes:'+n, ta.value);
+      const m = document.getElementById('savedMsg');
+      if (!m) return;
+      m.textContent = 'Saved';
+      m.classList.add('flash');
+      setTimeout(()=>m.classList.remove('flash'), 900);
+    }, 500);
+  });
+
+  show();
+}
+
+function show(){
+  const sh = document.getElementById('sheet');
+  sh.classList.add('up');
+  sh.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('back').addEventListener('click', hide);
+}
+function hide(){
+  document.getElementById('sheet').classList.remove('up');
+  document.body.style.overflow = '';
+  current = null;
+}
+
+/* ============================================================
+   LOGISTICS
+   ============================================================ */
+function openInfo(){
+  document.getElementById('sheetInner').innerHTML = `
+    <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">Practical</span></div>
+    <div class="sheet-head"><h2>Venue,<br>times &amp; dress</h2></div>
+    <div class="pane on">
+      <div class="info-row"><div class="info-k">Dates</div><div class="info-v">Sunday 23 – Thursday 27 August 2026<small>Five consecutive days.</small></div></div>
+      <div class="info-row"><div class="info-k">Hours</div><div class="info-v">10:00 a.m. – 5:00 p.m. daily<small>Doors from 9:30. Start is on the hour.</small></div></div>
+      <div class="info-row"><div class="info-k">Address</div><div class="info-v">64 NW 54 St, Suite 106<br>Miami, FL 33127<small>Wynwood.</small></div></div>
+      <div class="info-row"><div class="info-k">Bring</div><div class="info-v">Your kit, your mannequin head, and something to write with.<small>The workbook is handed to you on Day 1.</small></div></div>
+
+      <div class="h3" style="margin-top:38px">Dress code</div>
+      <p class="lede" style="font-size:19px">Business casual, held to a <em>neutral palette.</em> Black, white and the greys in between.</p>
+      <ul class="list">
+        <li><b>Yes</b> — plain tee or knit, overshirt, tailored trouser or clean dark denim, unbranded outerwear</li>
+        <li><b>Yes</b> — clean, plain footwear you can stand in for seven hours</li>
+        <li><b>No</b> — loud prints, visible logos, sportswear, brights</li>
+      </ul>
+      <div class="swatches" style="margin-bottom:34px">
+        <div class="sw" style="background:#08080A"><span>Black</span></div>
+        <div class="sw" style="background:#2C2C30"><span>Charcoal</span></div>
+        <div class="sw" style="background:#6E6E76"><span>Graphite</span></div>
+        <div class="sw" style="background:#B6B6BC"><span>Ash</span></div>
+        <div class="sw" style="background:#EDEDF0"><span>White</span></div>
+      </div>
+      <div class="footnote">You are photographed during the week. The neutral palette is what keeps the room looking like one cohort rather than five.</div>
+    </div>`;
+  show();
+  primePane(document.querySelector('.sheet-inner .pane.on'));
+}
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+async function buildExport(){
+  let out = 'THE MIAMI INTENSIVE — MY NOTES\nAugust 23–27, 2026 · Learn to Cut\n\n';
+  let any = false;
+  for (const d of DAYS){
+    const v = await Store.get('ltc:notes:'+d.n);
+    if (v && v.trim()){
+      any = true;
+      out += '─────────────────────────────\nDAY ' + d.n + ' — ' + d.title.replace('&amp;','&') + '\n' + d.date + '\n─────────────────────────────\n\n' + v.trim() + '\n\n';
+    }
+  }
+  return {text: out, any};
+}
+
+async function openExport(){
+  const {text, any} = await buildExport();
+  document.getElementById('sheetInner').innerHTML = `
+    <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">My notes</span></div>
+    <div class="sheet-head"><h2>Take your<br>notes with you</h2></div>
+    <div class="pane on">
+      ${any
+        ? `<p class="lede">Everything you have written across the five days, in one file. <em>Do this before you fly home.</em></p>
+           <button class="btn solid" id="dl">Download as a file</button>
+           <button class="btn" id="cp">Copy all notes</button>
+           <button class="btn ghost" id="ml">Email to myself</button>
+           <div class="footnote">Your notes live on this phone only. If you clear your browser or change device, they are gone — a copy off the phone is the safe version.</div>`
+        : `<div class="emptystate" style="padding-top:40px">
+             <h4>Nothing written yet</h4>
+             <p>Open a day and use the Notes tab. Whatever you write there collects here, ready to take with you.</p>
+           </div>`}
+    </div>`;
+  show();
+  primePane(document.querySelector('.sheet-inner .pane.on'));
+  if (!any) return;
+
+  document.getElementById('dl').onclick = () => {
+    const b = new Blob([text], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = 'Miami-Intensive-Notes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Downloaded');
+  };
+  document.getElementById('cp').onclick = async () => {
+    try { await navigator.clipboard.writeText(text); toast('Copied'); }
+    catch(e){
+      const t = document.createElement('textarea');
+      t.value = text; document.body.appendChild(t); t.select();
+      try{ document.execCommand('copy'); toast('Copied'); }catch(e2){ toast('Copy failed'); }
+      document.body.removeChild(t);
+    }
+  };
+  document.getElementById('ml').onclick = () => {
+    location.href = 'mailto:?subject=' + encodeURIComponent('My Miami Intensive notes') + '&body=' + encodeURIComponent(text.slice(0,1800));
+  };
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('up');
+  setTimeout(()=>t.classList.remove('up'), 1700);
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+const SUN = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.4M12 19.2v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.4 12h2.4M19.2 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>`;
+const MOON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.4A8.6 8.6 0 0 1 9.6 3.5a8.6 8.6 0 1 0 10.9 10.9z"/></svg>`;
+
+let theme = 'dark';
+function applyTheme(t, save){
+  theme = t;
+  if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+  else document.documentElement.removeAttribute('data-theme');
+  const btn = document.getElementById('btnTheme');
+  if (btn) btn.innerHTML = (t === 'light') ? MOON : SUN;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', t === 'light' ? '#F6F6F7' : '#08080A');
+  if (save) Store.set('ltc:theme', t);
+}
+document.getElementById('btnTheme').addEventListener('click', () => {
+  applyTheme(theme === 'dark' ? 'light' : 'dark', true);
+});
+Store.get('ltc:theme').then(v => {
+  applyTheme(v === 'light' ? 'light' : 'dark', false);
+});
+
+/* ============================================================
+   MOTION — measure svg paths so they draw themselves in
+   ============================================================ */
+function primeFigures(scope){
+  scope.querySelectorAll('.fig svg').forEach((svg, fi) => {
+    svg.querySelectorAll('path,circle,ellipse,rect,line').forEach((el, i) => {
+      let len = 0;
+      try { len = el.getTotalLength ? el.getTotalLength() : 0; } catch(e){}
+      if (!len || !isFinite(len)) len = 400;
+      el.style.setProperty('--len', Math.ceil(len));
+      el.style.setProperty('--dd', (fi * 90 + i * 55 + 100) + 'ms');
+    });
+  });
+}
+function primePane(pane){
+  if (!pane || pane.dataset.primed) return;
+  pane.dataset.primed = '1';
+  primeFigures(pane);
+  stagger(pane, '.lede, .slot, .card, .h3, .fig, ul.list, .steps, .pull, .info-row, .btn, .swatches, .footnote, .emptystate', 58, 60);
+}
+function stagger(scope, sel, step, start){
+  scope.querySelectorAll(sel).forEach((el, i) => {
+    el.classList.add('enter');
+    el.style.setProperty('--d', (start + i * step) + 'ms');
+  });
+}
+
+/* ============================================================
+   INSTRUCTOR OVERRIDE — tap the monogram 5×
+   ============================================================ */
+let taps = 0, tapTimer = null;
+document.getElementById('mono').addEventListener('click', () => {
+  taps++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>{ taps = 0; }, 1400);
+  if (taps >= 5){
+    taps = 0;
+    override = !override;
+    renderHome();
+    toast(override ? 'All days unlocked' : 'Back to live dates');
+  }
+});
+
+document.getElementById('btnInfo').addEventListener('click', openInfo);
+document.getElementById('btnExport').addEventListener('click', openExport);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+
+renderHome();
+
+/* first-load entrance */
+[['.eyebrow',0],['.hero h1',70],['.hero .meta',180],['.status',260]].forEach(([sel,d]) => {
+  const el = document.querySelector(sel);
+  if (el){ el.classList.add('enter'); el.style.setProperty('--d', d + 'ms'); }
+});
+[['.certblock h2',0],['.cert-stage',90],['.cert-caption',180],['.certblock .sub',230],['.namefield',280]].forEach(([sel,d]) => {
+  const el = document.querySelector(sel);
+  if (el){ el.classList.add('enter-sm'); el.style.setProperty('--d', d + 'ms'); }
+});
+</script>
