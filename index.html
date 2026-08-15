@@ -131,6 +131,84 @@ input{font:inherit;color:inherit}
 /* hold the page still behind the curtain */
 .booting .wrap,.booting .wrap *{animation-play-state:paused !important}
 
+/* ============================================================
+   THE ROOM — third column, instructor only, wide screens only.
+   Empty search shows the roster; typing searches the material.
+   ============================================================ */
+.people{display:none;flex-direction:column;overflow:hidden}
+.people-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:19px 20px 17px;border-bottom:1px solid var(--bone-09);
+}
+.people-ttl{display:flex;align-items:baseline;gap:9px;min-width:0}
+.people-head .lbl{color:var(--bone-38)}
+.people-n{font-size:9.5px;letter-spacing:.16em;color:var(--bone-18);font-weight:500;white-space:nowrap}
+.people-manage{
+  font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  color:var(--bone-38);border:1px solid var(--bone-09);border-radius:100px;padding:6px 11px;
+  transition:color .2s ease,border-color .2s ease;flex:none;
+}
+.people-manage:hover{color:var(--bone-60);border-color:var(--bone-18)}
+
+.people-search{position:relative;padding:14px 20px;border-bottom:1px solid var(--bone-09)}
+.people-search svg{position:absolute;left:33px;top:50%;transform:translateY(-50%);
+  color:var(--bone-38);pointer-events:none}
+.people-search input{
+  width:100%;background:var(--ink-2);border:1px solid var(--bone-09);border-radius:100px;
+  padding:10px 14px 10px 33px;font-size:12.5px;font-weight:300;color:var(--bone);
+  transition:border-color .2s ease;
+}
+.people-search input::placeholder{color:var(--bone-38)}
+.people-search input:focus{outline:none;border-color:var(--bone-18)}
+
+.people-body{flex:1;overflow-y:auto;scrollbar-width:none;padding-bottom:24px}
+.people-body::-webkit-scrollbar{display:none}
+
+.prow{display:flex;align-items:center;gap:12px;padding:10px 20px}
+.pav{
+  width:33px;height:33px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:500;letter-spacing:.04em;color:var(--bone-60);
+  background:linear-gradient(150deg,var(--ink-3),var(--ink-2));
+  border:1px solid var(--bone-18);
+}
+.pn{font-size:13.5px;font-weight:300;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.pres{
+  display:block;width:100%;text-align:left;padding:12px 20px;
+  border-bottom:1px solid var(--bone-09);position:relative;overflow:hidden;
+}
+.pres::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--bone-09),transparent 62%);
+  opacity:0;transition:opacity .26s ease}
+.pres:hover::before{opacity:1}
+.pk{display:block;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bone-18);font-weight:500}
+.pt{display:block;font-size:13.5px;font-weight:300;letter-spacing:-.02em;margin-top:4px;line-height:1.3}
+.pempty{padding:26px 20px;font-size:12px;color:var(--bone-38);line-height:1.65}
+.pempty b{color:var(--bone-60);font-weight:500}
+
+/* ---------- pages ---------- */
+.page{position:relative;z-index:1;animation:fade .3s ease}
+.page-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px var(--pad);border-bottom:1px solid var(--bone-09);
+}
+.page-back{
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  color:var(--bone-38);display:flex;align-items:center;gap:9px;
+  transition:color .2s ease;
+}
+.page-back:hover{color:var(--bone)}
+
+/* nav marks where you are */
+.mrow.on{background:var(--ink-2)}
+.mrow.on::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--bone)}
+.mrow.on .t{color:var(--bone)}
+.mrow.on .k{color:var(--bone-38)}
+.mday.on{border-color:var(--bone);color:var(--bone)}
+
 /* ---------- shell ---------- */
 .wrap{max-width:640px;margin:0 auto;min-height:100vh;position:relative}
 /* never wider than the column it sits in — an 820px glow on a 375px
@@ -509,7 +587,7 @@ html[data-theme="light"] .cert-shadow{background:radial-gradient(closest-side,rg
 /* tabs */
 .tabs{
   display:flex;gap:0;border-bottom:1px solid var(--bone-09);
-  position:sticky;top:53px;background:var(--scrim);backdrop-filter:blur(16px);z-index:4;
+  position:sticky;top:var(--masth,58px);background:var(--scrim);backdrop-filter:blur(16px);z-index:4;
   overflow-x:auto;scrollbar-width:none;
 }
 .tabs::-webkit-scrollbar{display:none}
@@ -901,7 +979,9 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
   .mrow .d{font-size:11px}
   .menu-foot{padding-bottom:34px}
 
-  .wrap{grid-column:2;grid-row:1;max-width:1160px;margin:0 auto;padding:0 8px}
+  /* sits against the side nav rather than floating in the middle of the
+     column — the gutter falls on the right instead of being split */
+  .wrap{grid-column:2;grid-row:1;max-width:1160px;margin:0;padding:0 8px}
   .mast{padding:22px var(--pad) 18px}
   .mono{font-size:16px}
 
@@ -951,7 +1031,7 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
   .sheet-bar{padding:18px 30px}
   .sheet-head{padding:46px 44px 30px}
   .sheet-head h2{font-size:clamp(40px,3.4vw,52px)}
-  .tabs{top:57px;padding:0 32px}
+  .tabs{top:var(--masth,64px);padding:0 32px}
   .tab{padding:16px 14px;font-size:10px}
   .tab::after{left:14px;right:14px}
   .pane{padding:40px 44px 52px}
@@ -974,6 +1054,18 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
   body{grid-template-columns:340px minmax(0,1fr)}
   .wrap{max-width:1280px}
   .hero{padding-top:104px}
+}
+
+/* the room takes the right-hand gutter — only where there is room for it,
+   and only for the instructor. Below this it stays in the Roster tab. */
+@media (min-width:1500px){
+  body.is-instructor{grid-template-columns:340px minmax(0,1fr) 322px}
+  body.is-instructor .people{
+    display:flex;grid-column:3;grid-row:1;
+    position:sticky;top:0;height:100vh;
+    border-left:1px solid var(--bone-09);
+  }
+  body.is-instructor .wrap{max-width:1180px}
 }
 
 .toast{
@@ -1042,6 +1134,7 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
     </div>
   </div>
 
+  <div id="homeView">
   <div class="hero">
     <div class="eyebrow">Student companion</div>
     <h1>The Miami<br>Intensive <span>—</span><br>Five Days</h1>
@@ -1062,6 +1155,9 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
     <span>Learn to Cut</span>
     <span>Wynwood · MMXXVI</span>
   </div>
+  </div>
+
+  <div class="page" id="page" hidden></div>
 
 </div>
 
@@ -1097,6 +1193,18 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
     <div class="menu-sig">Learn to Cut · MMXXVI</div>
   </div>
 </nav>
+
+<aside class="people" id="people" aria-label="The room">
+  <div class="people-head">
+    <span class="people-ttl"><span class="lbl">The room</span><span class="people-n" id="peopleN"></span></span>
+    <button class="people-manage" id="peopleManage">Manage</button>
+  </div>
+  <div class="people-search">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.8"/><path d="M15.6 15.6 21 21"/></svg>
+    <input id="peopleQ" type="text" placeholder="Search decks, days, reference" spellcheck="false" autocomplete="off">
+  </div>
+  <div class="people-body" id="peopleBody"></div>
+</aside>
 
 <div class="sheet" id="sheet"><div class="sheet-inner" id="sheetInner"></div></div>
 <div class="toast" id="toast"></div>
@@ -1593,7 +1701,59 @@ function openCert(){
 }
 
 /* ============================================================
-   RENDER — day sheet
+   VIEWS — the main column renders one view at a time. Days and
+   the instructor screens are pages here, not dialogs: a stray
+   click outside can't throw you out of them. Short reference
+   screens (certificate, venue, notes export) stay as dialogs.
+   ============================================================ */
+let view = 'home';
+
+function pageBar(label){
+  return `<div class="page-bar">
+    <button class="page-back" data-home>← The five days</button>
+    <span class="sheet-day">${label}</span>
+  </div>`;
+}
+
+function setView(v, html, after){
+  view = v;
+  const home = document.getElementById('homeView');
+  const page = document.getElementById('page');
+
+  if (v === 'home'){
+    page.hidden = true;
+    page.innerHTML = '';
+    home.hidden = false;
+    clearInterval(showTimer);
+  } else {
+    home.hidden = true;
+    page.hidden = false;
+    page.innerHTML = html;
+    page.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', goHome));
+    if (after) after(page);
+  }
+
+  paintMenuNav();
+  paintMenuDays();
+  if (menuOpen) closeMenu();
+  window.scrollTo(0, 0);
+}
+function goHome(){ current = null; setView('home'); }
+
+/* the tab strip sticks under the masthead, whatever height it is */
+function measureMast(){
+  const m = document.querySelector('.mast');
+  if (!m) return;
+  const h = Math.round(m.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--masth', h + 'px');
+}
+/* the masthead changes height on resize and again when DM Sans lands,
+   so watch it rather than measuring once and hoping */
+if (window.ResizeObserver) new ResizeObserver(measureMast).observe(document.querySelector('.mast'));
+else addEventListener('resize', measureMast);
+
+/* ============================================================
+   RENDER — day page
    ============================================================ */
 function block(b){
   let out = `<div class="h3">${b.h}</div>`;
@@ -1610,21 +1770,20 @@ function openDay(n){
   current = n;
 
   if (s === 'locked'){
-    document.getElementById('sheetInner').innerHTML = `
-      <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">Day ${n}</span></div>
+    setView('day:' + n, `
+      ${pageBar('Day ' + n)}
       <div class="sheet-head"><h2>${d.title}</h2><div class="daydate">${d.date}</div></div>
       <div class="emptystate enter" style="--d:120ms">
         ${lockIcon.replace('width="13" height="13"','width="34" height="34"')}
         <h4>Not yet</h4>
         <p>This day opens on ${d.date.split('·')[1].trim()} at 10:00. You will find the schedule, the exercises and the reference material here that morning.</p>
-      </div>`;
-    show();
+      </div>`);
     return;
   }
 
   const tabs = [['sched','Schedule'],['work','Work'],['ref','Reference'],['notes','Notes'],['recap','Recap']];
-  document.getElementById('sheetInner').innerHTML = `
-    <div class="sheet-bar"><button class="back" id="back">← All days</button><span class="sheet-day">Day ${n} of 5</span></div>
+  const html = `
+    ${pageBar('Day ' + n + ' of 5')}
     <div class="sheet-head"><h2>${d.title}</h2><div class="daydate">${d.date} · 10:00 – 5:00</div></div>
     <div class="tabs">${tabs.map((t,i)=>`<button class="tab ${i===0?'on':''}" data-p="${t[0]}">${t[1]}</button>`).join('')}</div>
 
@@ -1654,7 +1813,7 @@ function openDay(n){
         <textarea id="ta" placeholder="Start writing…"></textarea>
         <div class="saved" id="savedMsg"></div>
       </div>
-      <div class="footnote">Clearing your browser data will clear these notes. Use <strong style="color:var(--bone-60)">My notes</strong> at the top of the home screen to save a copy off the phone.</div>
+      <div class="footnote">Clearing your browser data will clear these notes. Use <strong style="color:var(--bone-60)">My notes</strong> in the menu to save a copy off the phone.</div>
     </div>
 
     <div class="pane" id="p-recap">
@@ -1663,28 +1822,28 @@ function openDay(n){
         : `<div class="emptystate">${lockIcon.replace('width="13" height="13"','width="34" height="34"')}<h4>After 5:00</h4><p>The recap for this day unlocks when the day is done.</p></div>`}
     </div>`;
 
-  wireTabs();
-  primePane(document.getElementById('p-sched'));
+  setView('day:' + n, html, () => {
+    wireTabs();
+    primePane(document.getElementById('p-sched'));
 
-  const ta = document.getElementById('ta');
-  Store.get('ltc:notes:'+n).then(v => { if (v) ta.value = v; });
-  ta.addEventListener('input', () => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(async () => {
-      await Store.set('ltc:notes:'+n, ta.value);
-      const m = document.getElementById('savedMsg');
-      if (!m) return;
-      m.textContent = 'Saved';
-      m.classList.add('flash');
-      setTimeout(()=>m.classList.remove('flash'), 900);
-    }, 500);
+    const ta = document.getElementById('ta');
+    Store.get('ltc:notes:'+n).then(v => { if (v) ta.value = v; });
+    ta.addEventListener('input', () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        await Store.set('ltc:notes:'+n, ta.value);
+        const m = document.getElementById('savedMsg');
+        if (!m) return;
+        m.textContent = 'Saved';
+        m.classList.add('flash');
+        setTimeout(()=>m.classList.remove('flash'), 900);
+      }, 500);
+    });
   });
-
-  show();
 }
 
-/* tabs are shared by the day sheets and the instructor panel */
-function wireTabs(){
+/* tabs are shared by the day pages and the instructor panel */
+function wireTabs(onSwitch){
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
     document.querySelectorAll('.pane').forEach(x => x.classList.remove('on'));
@@ -1692,14 +1851,20 @@ function wireTabs(){
     const pane = document.getElementById('p-' + t.dataset.p);
     pane.classList.add('on');
     primePane(pane);
+    if (onSwitch) onSwitch(t.dataset.p);
     scrollSheetTop();
   }));
 }
-/* phone: the sheet itself scrolls. desktop: the dialog inside it does. */
+/* pages scroll with the window; dialogs scroll inside themselves */
 function scrollSheetTop(){
-  document.getElementById('sheet').scrollTop = 0;
-  const inner = document.getElementById('sheetInner');
-  if (inner) inner.scrollTop = 0;
+  const sheet = document.getElementById('sheet');
+  if (sheet.classList.contains('up')){
+    sheet.scrollTop = 0;
+    const inner = document.getElementById('sheetInner');
+    if (inner) inner.scrollTop = 0;
+    return;
+  }
+  window.scrollTo(0, 0);
 }
 
 function show(){
@@ -1898,6 +2063,8 @@ function applyRole(r, save){
     ? 'Decks, run of show, roster and controls'
     : 'The five days, your notes and your certificate';
   paintMenuNav();
+  document.body.classList.toggle('is-instructor', r === 'instructor');
+  if (r === 'instructor') loadInstructorData().then(paintPeople);
   if (save) Store.set('ltc:role', r);
 }
 
@@ -1960,7 +2127,7 @@ function switchRole(r){
     if (r === 'student') certHeld = false;
     paintCert();
     renderHome();
-    paintMenuDays();
+    goHome();          /* instructor pages must not survive the switch */
   }, ms - 380);
 
   setTimeout(() => {
@@ -2018,6 +2185,73 @@ async function loadInstructorData(){
 }
 const saveDecks  = () => Store.set('ltc:decks',  JSON.stringify(decks));
 const saveRoster = () => Store.set('ltc:roster', JSON.stringify(roster));
+
+/* ---- the room panel ------------------------------------------- */
+function initials(name){
+  const p = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) return '·';
+  if (p.length === 1) return p[0].slice(0,2).toUpperCase();
+  return (p[0][0] + p[p.length-1][0]).toUpperCase();
+}
+
+function openDayTab(n, p){
+  openDay(n);
+  const t = document.querySelector('.tab[data-p="' + p + '"]');
+  if (t) t.click();
+}
+
+/* everything the instructor might go looking for mid-session */
+function searchIndex(){
+  const out = [];
+  (decks || []).forEach(d => {
+    if (!d.t && !d.u) return;
+    out.push({
+      k: d.u ? 'Deck' : 'Deck · no link yet',
+      t: d.t || 'Untitled deck',
+      go: () => d.u ? window.open(d.u, '_blank', 'noopener') : openInstructor('decks')
+    });
+  });
+  DAYS.forEach(d => {
+    const title = d.title.replace('&amp;','&');
+    out.push({ k:'Day ' + d.n, t:title, go:() => openDay(d.n) });
+    d.schedule.forEach(s => out.push({
+      k: 'Day ' + d.n + ' · ' + s.t, t: s.n.replace('&amp;','&'), go: () => openDay(d.n)
+    }));
+    d.ref.forEach(b => out.push({
+      k: 'Reference · day ' + d.n, t: b.h, go: () => openDayTab(d.n, 'ref')
+    }));
+  });
+  return out;
+}
+
+function paintPeople(){
+  const body = document.getElementById('peopleBody');
+  if (!body) return;
+  const q = (document.getElementById('peopleQ').value || '').trim().toLowerCase();
+  const count = document.getElementById('peopleN');
+
+  if (q){
+    const hits = searchIndex().filter(x => (x.t + ' ' + x.k).toLowerCase().includes(q)).slice(0, 30);
+    count.textContent = hits.length ? hits.length + (hits.length === 1 ? ' result' : ' results') : '';
+    body.innerHTML = hits.length
+      ? hits.map((h, i) => `<button class="pres" data-i="${i}"><span class="pk">${esc(h.k)}</span><span class="pt">${esc(h.t)}</span></button>`).join('')
+      : `<div class="pempty">Nothing matching <b>${esc(q)}</b>.<br><br>Search covers your decks, the five days, every session on them and the reference material.</div>`;
+    body.querySelectorAll('.pres').forEach(b => b.addEventListener('click', () => hits[+b.dataset.i].go()));
+    return;
+  }
+
+  const list = (roster || []).filter(r => (r.n || '').trim());
+  count.textContent = list.length ? list.length + (list.length === 1 ? ' student' : ' students') : '';
+  body.innerHTML = list.length
+    ? list.map(r => `<div class="prow"><span class="pav">${esc(initials(r.n))}</span><span class="pn">${esc(r.n)}</span></div>`).join('')
+    : `<div class="pempty">No one on the roster yet.<br><br>Add students under <b>Manage</b> and they appear here, with attendance still kept on the Roster tab.</div>`;
+}
+
+document.getElementById('peopleQ').addEventListener('input', paintPeople);
+document.getElementById('peopleQ').addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ e.stopPropagation(); e.target.value = ''; paintPeople(); }
+});
+document.getElementById('peopleManage').addEventListener('click', () => openInstructor('roster'));
 
 /* '10:00' / '2:45' → minutes since midnight, reading the schedule as 10am–5pm */
 function toMin(t){
@@ -2145,6 +2379,7 @@ function renderRosterPane(){
     const i = +row.dataset.i;
     row.querySelector('.rs-n').addEventListener('input', e => {
       roster[i].n = e.target.value;
+      paintPeople();
       clearTimeout(iSaveTimer); iSaveTimer = setTimeout(saveRoster, 400);
     });
     row.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
@@ -2154,7 +2389,7 @@ function renderRosterPane(){
       saveRoster();
     }));
     row.querySelector('[data-del]').addEventListener('click', () => {
-      roster.splice(i, 1); saveRoster(); renderRosterPane();
+      roster.splice(i, 1); saveRoster(); renderRosterPane(); paintPeople();
     });
   });
 }
@@ -2292,8 +2527,8 @@ async function openInstructor(startTab){
   const tabs = [['decks','Decks'],['show','Run of show'],['roster','Roster'],['tnotes','Notes'],['controls','Controls']];
   const start = tabs.some(t => t[0] === startTab) ? startTab : 'decks';
 
-  document.getElementById('sheetInner').innerHTML = `
-    <div class="sheet-bar"><button class="back" id="back">← ${role === 'instructor' ? 'Close' : 'All days'}</button><span class="sheet-day">Instructor</span></div>
+  const html = `
+    ${pageBar('Instructor')}
     <div class="sheet-head"><h2>Instructor<br>panel</h2><div class="daydate">Miami · 23–27 August 2026</div></div>
     <div class="tabs">${tabs.map(t => `<button class="tab ${t[0] === start ? 'on' : ''}" data-p="${t[0]}">${t[1]}</button>`).join('')}</div>
     <div class="pane ${start === 'decks' ? 'on' : ''}" id="p-decks">
@@ -2307,19 +2542,20 @@ async function openInstructor(startTab){
     <div class="pane ${start === 'tnotes' ? 'on' : ''}" id="p-tnotes"></div>
     <div class="pane ${start === 'controls' ? 'on' : ''}" id="p-controls"></div>`;
 
-  wireDecks();
-  renderShowPane(); renderRosterPane(); renderTNotesPane(); renderControlsPane();
-  wireTabs();
-  primePane(document.getElementById('p-' + start));
+  setView('i:' + start, html, () => {
+    wireDecks();
+    renderShowPane(); renderRosterPane(); renderTNotesPane(); renderControlsPane();
+    /* switching tab is navigation too — keep the sidebar in step */
+    wireTabs(p => { view = 'i:' + p; paintMenuNav(); });
+    primePane(document.getElementById('p-' + start));
 
-  clearInterval(showTimer);
-  showTimer = setInterval(() => {
-    const p = document.getElementById('p-show');
-    if (p && p.classList.contains('on')) renderShowPane();
-    else if (!p) clearInterval(showTimer);
-  }, 30000);
-
-  show();
+    clearInterval(showTimer);
+    showTimer = setInterval(() => {
+      const p = document.getElementById('p-show');
+      if (p && p.classList.contains('on')) renderShowPane();
+      else if (!p) clearInterval(showTimer);
+    }, 30000);
+  });
 }
 
 function wireDecks(){
@@ -2369,7 +2605,7 @@ let menuOpen = false;
 function paintMenuDays(){
   document.getElementById('menuDays').innerHTML = DAYS.map(d => {
     const s = stateFor(d.n);
-    return `<button class="mday ${s === 'locked' ? '' : 'open'} ${s === 'today' ? 'today' : ''}"
+    return `<button class="mday ${s === 'locked' ? '' : 'open'} ${s === 'today' ? 'today' : ''} ${view === 'day:' + d.n ? 'on' : ''}"
       data-n="${d.n}" ${s === 'locked' ? 'disabled' : ''} title="${d.title.replace('&amp;','&')}">
       ${String(d.n).padStart(2,'0')}</button>`;
   }).join('');
@@ -2434,11 +2670,13 @@ const NAV = {
 
 function paintMenuNav(){
   const rows = NAV[role === 'instructor' ? 'instructor' : 'student'];
-  document.getElementById('menuNav').innerHTML = rows.map((r, i) => `
-    <button class="mrow" data-go="${r[0]}">
+  document.getElementById('menuNav').innerHTML = rows.map((r, i) => {
+    const active = (r[0] === 'days' && view === 'home') || r[0] === view;
+    return `<button class="mrow ${active ? 'on' : ''}" data-go="${r[0]}"${active ? ' aria-current="page"' : ''}>
       <span class="k">${String(i+1).padStart(2,'0')}</span>
       <span><span class="t">${r[1]}</span><span class="d">${r[2]}</span></span>
-    </button>`).join('');
+    </button>`;
+  }).join('');
 }
 
 document.getElementById('menuNav').addEventListener('click', e => {
@@ -2449,10 +2687,7 @@ document.getElementById('menuNav').addEventListener('click', e => {
   if (go === 'notes')  return runFromMenu(openExport);
   if (go === 'venue')  return runFromMenu(openInfo);
   if (go === 'cert')   return runFromMenu(openCert);
-  if (go === 'days')   return runFromMenu(() => {
-    hide();
-    window.scrollTo({top: document.querySelector('.ledger').offsetTop - 60, behavior:'smooth'});
-  });
+  if (go === 'days')   return runFromMenu(goHome);
 });
 
 document.getElementById('roleSwitch').addEventListener('click', () => runFromMenu(() => {
@@ -2480,12 +2715,14 @@ document.querySelectorAll('#menuTheme button').forEach(b => b.addEventListener('
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (menuOpen) closeMenu(); else hide();
+  if (menuOpen) closeMenu();
+  else if (document.getElementById('sheet').classList.contains('up')) hide();
+  else if (view !== 'home') goHome();
 });
 
 /* on desktop the rail is always on screen, so it has to be painted
    at startup rather than only when the panel is opened */
-paintMenuNav(); paintMenuDays(); paintMenuTheme();
+paintMenuNav(); paintMenuDays(); paintMenuTheme(); measureMast();
 
 renderHome();
 
