@@ -5,6 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('booting')</script>
 
 <style>
 :root{
@@ -24,7 +25,7 @@
   --sans:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;
   --pad:22px;
 }
-[data-theme="light"]{
+html[data-theme="light"]{
   --ink:#F6F6F7;
   --ink-2:#EFEFF1;
   --ink-3:#E6E6E9;
@@ -55,6 +56,7 @@ body{
   -webkit-font-smoothing:antialiased;
   padding-bottom:env(safe-area-inset-bottom);
   overflow-x:hidden;
+  overflow-x:clip;   /* clip, not hidden — no scroll container, so sticky still works */
 }
 /* film grain */
 body::before{
@@ -70,11 +72,72 @@ input{font:inherit;color:inherit}
 .dsp{font-weight:250;letter-spacing:-.038em;font-optical-sizing:auto}
 .lbl{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
 
+/* ============================================================
+   INTRO — the curtain. Full run on a cold open, short run if
+   they were here in the last four hours. Tap skips it.
+   ============================================================ */
+.intro{
+  position:fixed;inset:0;z-index:110;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;overflow:hidden;
+  transition:opacity .62s cubic-bezier(.4,0,.2,1),transform .62s cubic-bezier(.4,0,.2,1);
+}
+.intro::before{
+  content:"";position:absolute;top:50%;left:50%;width:820px;height:560px;
+  transform:translate(-50%,-58%);pointer-events:none;
+  background:radial-gradient(closest-side,var(--glow),transparent 70%);
+}
+.intro.out{opacity:0;transform:scale(1.035);pointer-events:none}
+.intro.gone{display:none}
+.intro-inner{position:relative;text-align:center;padding:0 26px}
+
+.intro-mark{
+  font-size:12.5px;font-weight:600;opacity:0;
+  background:linear-gradient(96deg,var(--bone) 10%,var(--bone-38) 40%,var(--bone) 60%,var(--bone-38) 92%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmerText 5s linear infinite,introMark 1.6s cubic-bezier(.16,.72,.24,1) forwards;
+}
+@keyframes introMark{
+  0%{opacity:0;letter-spacing:1.45em;text-indent:1.45em}
+  55%{opacity:1}
+  100%{opacity:1;letter-spacing:.42em;text-indent:.42em}
+}
+.intro-rule{
+  height:1px;width:min(300px,64vw);margin:24px auto 0;background:var(--bone-09);
+  position:relative;opacity:0;animation:fadeIn .5s ease .42s forwards;
+}
+.intro-rule i{
+  position:absolute;inset:0;transform:scaleX(0);
+  background:linear-gradient(90deg,transparent,var(--bone-60),transparent);
+  animation:ruleOut 1s cubic-bezier(.16,.72,.24,1) .48s forwards;
+}
+@keyframes ruleOut{to{transform:scaleX(1)}}
+@keyframes fadeIn{to{opacity:1}}
+.intro-title{
+  font-size:clamp(38px,11.5vw,56px);font-weight:250;letter-spacing:-.045em;line-height:.94;
+  margin:26px 0 0;opacity:0;animation:rise .95s cubic-bezier(.16,.72,.24,1) .72s forwards;
+}
+.intro-title span{color:var(--bone-38)}
+.intro-skip{
+  position:absolute;left:0;right:0;bottom:46px;text-align:center;
+  font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--bone-18);
+  font-weight:500;opacity:0;animation:fadeIn .7s ease 2s forwards;
+}
+/* short run for a warm open */
+.intro.quick .intro-rule,.intro.quick .intro-title,.intro.quick .intro-skip{display:none}
+.intro.quick .intro-mark{animation:shimmerText 5s linear infinite,introMark .7s cubic-bezier(.16,.72,.24,1) forwards}
+
+/* hold the page still behind the curtain */
+.booting .wrap,.booting .wrap *{animation-play-state:paused !important}
+
 /* ---------- shell ---------- */
 .wrap{max-width:640px;margin:0 auto;min-height:100vh;position:relative}
+/* never wider than the column it sits in — an 820px glow on a 375px
+   phone inflates the layout viewport and pushes the whole site sideways */
 .wrap::before{
   content:"";position:absolute;top:-220px;left:50%;transform:translateX(-50%);
-  width:820px;height:520px;pointer-events:none;z-index:0;
+  width:min(820px,100%);height:520px;pointer-events:none;z-index:0;
   background:radial-gradient(closest-side,var(--glow),transparent 72%);
 }
 
@@ -105,6 +168,100 @@ input{font:inherit;color:inherit}
 .chip:active{color:var(--bone);border-color:var(--bone-38)}
 .chip.icon{padding:6px 9px;display:flex;align-items:center}
 .chip.icon svg{display:block}
+
+/* ---------- hamburger ---------- */
+.burger{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:42px;height:34px;border:1px solid var(--bone-18);border-radius:100px;
+  transition:border-color .2s ease,transform .18s ease;
+}
+.burger:active{transform:scale(.94)}
+.burger i{display:block;width:15px;height:1px;background:var(--bone);
+  transition:transform .34s cubic-bezier(.16,.72,.24,1),opacity .18s ease}
+.burger i:nth-child(2){width:11px;margin-left:-4px}
+.burger.on{border-color:var(--bone-38)}
+.burger.on i:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger.on i:nth-child(2){opacity:0;transform:translateX(-6px)}
+.burger.on i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ---------- menu ---------- */
+.menu-scrim{
+  position:fixed;inset:0;z-index:71;background:rgba(0,0,0,.62);
+  opacity:0;pointer-events:none;transition:opacity .42s ease;
+}
+html[data-theme="light"] .menu-scrim{background:rgba(0,0,0,.34)}
+.menu-scrim.up{opacity:1;pointer-events:auto}
+.menu{
+  position:fixed;top:0;right:0;bottom:0;width:min(390px,89vw);z-index:72;
+  background:var(--ink);border-left:1px solid var(--bone-18);
+  box-shadow:-40px 0 80px -40px rgba(0,0,0,.9);
+  transform:translateX(100%);visibility:hidden;
+  transition:transform .44s cubic-bezier(.3,.7,.25,1),visibility .44s;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;
+}
+.menu.up{transform:none;visibility:visible}
+.menu::before{
+  content:"";position:absolute;top:-180px;right:-120px;width:520px;height:400px;pointer-events:none;
+  background:radial-gradient(closest-side,var(--glow),transparent 70%);
+}
+.menu-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:19px var(--pad) 17px;border-bottom:1px solid var(--bone-09);position:relative;
+}
+.menu-head .lbl{color:var(--bone-38)}
+.menu-x{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+
+.mrow{
+  display:flex;width:100%;align-items:flex-start;gap:14px;text-align:left;
+  padding:17px var(--pad);border-bottom:1px solid var(--bone-09);
+  position:relative;overflow:hidden;
+}
+.mrow::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--bone-09),transparent 62%);
+  opacity:0;transition:opacity .28s ease;
+}
+.mrow:hover::before{opacity:1}
+.mrow:active{background:var(--ink-2)}
+.mrow .k{font-size:9.5px;letter-spacing:.16em;color:var(--bone-18);font-weight:500;
+  width:20px;flex:none;padding-top:9px;font-variant-numeric:tabular-nums}
+.mrow .t{font-size:23px;font-weight:250;letter-spacing:-.038em;line-height:1.16}
+.mrow .d{display:block;font-size:11.5px;color:var(--bone-38);margin-top:2px;line-height:1.5}
+
+.mlabel{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-38);
+  font-weight:500;padding:26px var(--pad) 0}
+.mdays{display:flex;gap:6px;padding:13px var(--pad) 0}
+.mday{
+  flex:1;border:1px solid var(--bone-09);border-radius:3px;padding:12px 0;
+  font-size:15px;font-weight:300;color:var(--bone-38);font-variant-numeric:tabular-nums;
+  transition:border-color .2s ease,color .2s ease,transform .16s ease;
+}
+.mday:active{transform:scale(.95)}
+.mday.open{color:var(--bone-60);border-color:var(--bone-18)}
+.mday.today{color:var(--ink);background:var(--bone);border-color:var(--bone);font-weight:500}
+
+.seg{display:flex;margin:13px var(--pad) 0;border:1px solid var(--bone-09);
+  border-radius:100px;padding:3px;gap:3px}
+.seg button{
+  flex:1;padding:10px 0;border-radius:100px;font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--bone-38);font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:all .22s ease;
+}
+.seg button svg{display:block;opacity:.8}
+.seg button.on{background:var(--bone);color:var(--ink)}
+
+.menu-foot{
+  margin-top:auto;padding:30px var(--pad) calc(34px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--bone-09);font-size:12px;color:var(--bone-38);line-height:1.7;
+}
+.menu-foot b{display:block;color:var(--bone-60);font-weight:400}
+.menu-foot a{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;color:var(--bone);
+  text-decoration:none;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;
+  border-bottom:1px solid var(--bone-18);padding-bottom:5px;
+}
+.menu-sig{margin-top:26px;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-18);font-weight:500}
 
 /* ---------- hero ---------- */
 .hero{padding:44px var(--pad) 30px;border-bottom:1px solid var(--bone-09);position:relative;z-index:1}
@@ -186,12 +343,8 @@ input{font:inherit;color:inherit}
 /* ============================================================
    CERTIFICATE — the object at the end of the week
    ============================================================ */
-.certblock{padding:52px var(--pad) 40px;border-top:1px solid var(--bone-09);position:relative;z-index:1}
-.certblock .eyebrow{margin-bottom:14px}
-.certblock h2{font-size:clamp(30px,9vw,42px);font-weight:250;letter-spacing:-.045em;
-  line-height:.98;margin:0 0 6px}
-.certblock h2 span{color:var(--bone-38)}
-.certblock .sub{font-size:13px;color:var(--bone-60);line-height:1.62;margin:14px 0 0;max-width:44ch}
+.certside .lede{margin:26px 0 0;font-size:19px}
+.certside .footnote{margin-top:26px}
 
 .cert-stage{
   container-type:inline-size;
@@ -239,7 +392,7 @@ input{font:inherit;color:inherit}
   background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent 72%);
   filter:blur(7px);opacity:.85;
 }
-[data-theme="light"] .cert-shadow{background:radial-gradient(closest-side,rgba(0,0,0,.32),transparent 72%)}
+html[data-theme="light"] .cert-shadow{background:radial-gradient(closest-side,rgba(0,0,0,.32),transparent 72%)}
 
 /* sealed vs revealed */
 .cert-stage .cert-face:not(.lit){opacity:.10;filter:saturate(0) brightness(.85)}
@@ -307,9 +460,10 @@ input{font:inherit;color:inherit}
 .cert-seal svg{display:block;width:100%;height:auto}
 
 .cert-caption{
-  display:flex;align-items:center;gap:10px;margin-top:22px;
-  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px 9px;margin-top:22px;
+  font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-38);font-weight:500;
 }
+.cert-caption span{white-space:nowrap}
 .cert-caption b{color:var(--bone-60);font-weight:500}
 .cert-caption .dot{width:4px;height:4px;border-radius:50%;background:var(--bone-38);flex:none}
 
@@ -516,6 +670,290 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
   .mono,.cert-name{-webkit-text-fill-color:currentColor;color:var(--bone);background:none}
 }
 
+/* ============================================================
+   ROLE GATE
+   ============================================================ */
+.gate{
+  position:fixed;inset:0;z-index:108;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:var(--pad);
+  opacity:0;visibility:hidden;overflow-y:auto;overflow-x:hidden;
+  transition:opacity .45s ease,visibility .45s;
+}
+.gate.up{opacity:1;visibility:visible}
+.gate::before{
+  content:"";position:absolute;top:50%;left:50%;width:820px;height:560px;pointer-events:none;
+  transform:translate(-50%,-60%);background:radial-gradient(closest-side,var(--glow),transparent 70%);
+}
+.gate-inner{position:relative;width:100%;max-width:560px}
+.gate-lbl{color:var(--bone-38);display:block;margin-bottom:18px}
+.gate-h{font-size:clamp(34px,10vw,50px);font-weight:250;letter-spacing:-.045em;line-height:.98;margin:0 0 34px}
+.gate-opts{display:grid;gap:12px}
+.gopt{
+  display:block;text-align:left;border:1px solid var(--bone-09);border-radius:5px;
+  padding:22px;position:relative;overflow:hidden;
+  background:linear-gradient(170deg,var(--ink-3),var(--ink-2));
+  transition:border-color .25s ease,transform .18s ease;
+}
+.gopt::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s ease;
+  background:linear-gradient(120deg,var(--bone-09),transparent 60%)}
+.gopt:hover{border-color:var(--bone-18)}
+.gopt:hover::before{opacity:1}
+.gopt:active{transform:scale(.99)}
+.gopt-t{display:block;font-size:26px;font-weight:250;letter-spacing:-.038em;line-height:1.1;margin-bottom:8px}
+.gopt-d{display:block;font-size:13px;color:var(--bone-60);line-height:1.55;max-width:38ch}
+.gopt-go{display:block;margin-top:16px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bone-38);font-weight:500}
+.gate-code{display:none;margin-top:8px}
+.gate.asking .gate-opts{display:none}
+.gate.asking .gate-code{display:block}
+.gate-code .lbl{display:block;color:var(--bone-38);margin-bottom:11px}
+.gate-coderow{display:flex;gap:10px}
+#gateInput{
+  flex:1;background:var(--ink-2);border:1px solid var(--bone-09);border-radius:3px;
+  padding:15px 17px;font-size:19px;font-weight:300;letter-spacing:.3em;color:var(--bone);
+}
+#gateInput:focus{outline:none;border-color:var(--bone-18)}
+.gate-err{height:16px;margin-top:11px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--bone-38);font-weight:500}
+.gate-back{margin-top:22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--bone-38);font-weight:500}
+
+/* ---------- role handoff ---------- */
+.switching{
+  position:fixed;inset:0;z-index:112;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:var(--pad);
+  opacity:0;visibility:hidden;overflow:hidden;
+  transition:opacity .5s ease,visibility .5s;
+}
+.switching.up{opacity:1;visibility:visible}
+.switching::before{
+  content:"";position:absolute;top:50%;left:50%;width:820px;height:560px;pointer-events:none;
+  transform:translate(-50%,-58%);background:radial-gradient(closest-side,var(--glow),transparent 70%);
+}
+.switching-inner{position:relative;text-align:center;width:100%;max-width:340px}
+.sw-mark{
+  font-size:11px;font-weight:600;letter-spacing:.42em;text-indent:.42em;margin-bottom:38px;
+  background:linear-gradient(96deg,var(--bone) 10%,var(--bone-38) 40%,var(--bone) 60%,var(--bone-38) 92%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmerText 4s linear infinite;
+}
+.sw-k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+.sw-t{font-size:clamp(38px,11vw,48px);font-weight:250;letter-spacing:-.045em;line-height:1;margin:14px 0 34px}
+.sw-bar{height:1px;background:var(--bone-09);overflow:hidden;position:relative}
+.sw-bar i{display:block;height:100%;width:0;background:var(--bone)}
+.sw-step{
+  margin-top:20px;height:14px;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--bone-38);font-weight:500;transition:opacity .3s ease;
+}
+.sw-step.fade{opacity:0}
+
+.rolechip{
+  font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;
+  color:var(--ink);background:var(--bone);padding:5px 10px;border-radius:100px;
+}
+.rolerow{
+  display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px var(--pad);margin-top:12px;text-align:left;
+  border-top:1px solid var(--bone-09);border-bottom:1px solid var(--bone-09);
+}
+.rolerow:active{background:var(--ink-2)}
+.rolerow-t{display:block;font-size:19px;font-weight:300;letter-spacing:-.03em}
+.rolerow-d{display:block;font-size:11px;color:var(--bone-38);margin-top:2px}
+.rolerow-x{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-38);
+  font-weight:500;border:1px solid var(--bone-18);border-radius:100px;padding:7px 13px;flex:none}
+
+/* ============================================================
+   INSTRUCTOR PANEL
+   ============================================================ */
+.mini{
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  border:1px solid var(--bone-18);border-radius:100px;padding:8px 14px;color:var(--bone-60);
+  text-decoration:none;display:inline-flex;align-items:center;gap:7px;flex:none;
+  transition:all .2s ease;
+}
+.mini:hover{border-color:var(--bone-38);color:var(--bone)}
+.mini.solid{background:var(--bone);border-color:var(--bone);color:var(--ink);font-weight:600}
+.mini.off{opacity:.35;pointer-events:none}
+.mini.x{border-color:transparent;color:var(--bone-38);padding:8px 6px}
+
+.deck{border:1px solid var(--bone-09);border-radius:4px;padding:15px 16px;margin-bottom:10px;
+  background:linear-gradient(170deg,var(--ink-3),var(--ink-2))}
+.deck-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.deck-n{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-18);
+  font-weight:500;flex:none;font-variant-numeric:tabular-nums}
+.ifield{
+  flex:1;min-width:0;background:transparent;border:0;border-bottom:1px solid var(--bone-09);
+  padding:7px 0;font-size:15px;font-weight:300;letter-spacing:-.02em;color:var(--bone);
+}
+.ifield:focus{outline:none;border-bottom-color:var(--bone-38)}
+.ifield::placeholder{color:var(--bone-18)}
+.ifield.url{font-size:12.5px;color:var(--bone-60);letter-spacing:0}
+.deck-r{display:flex;align-items:center;gap:12px}
+
+.nowcard{
+  border:1px solid var(--bone-18);border-radius:4px;padding:20px;margin-bottom:14px;
+  background:linear-gradient(170deg,var(--ink-3),var(--ink-2));position:relative;overflow:hidden;
+}
+.nowcard::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--bone)}
+.nowcard .k{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+.nowcard .t{font-size:27px;font-weight:250;letter-spacing:-.038em;line-height:1.1;margin:9px 0 6px}
+.nowcard .d{font-size:13px;color:var(--bone-60);line-height:1.55}
+.nowcard .clock{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-38);
+  font-weight:500;margin-top:14px;font-variant-numeric:tabular-nums}
+.slot.is-now{background:var(--ink-2);margin:0 -14px;padding-left:14px;padding-right:14px;border-radius:3px}
+.slot.is-now .slot-time{color:var(--bone)}
+.slot.is-done{opacity:.4}
+
+.rost{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--bone-09)}
+.rost .ifield{border-bottom:0;font-size:14.5px;padding:4px 0}
+.rost-d{display:flex;gap:4px;flex:none}
+.rost-d button{
+  width:26px;height:26px;border:1px solid var(--bone-09);border-radius:3px;
+  font-size:9px;color:var(--bone-18);font-weight:500;font-variant-numeric:tabular-nums;
+  transition:all .18s ease;
+}
+.rost-d button.in{background:var(--bone);border-color:var(--bone);color:var(--ink);font-weight:600}
+.rost-head{display:flex;align-items:center;gap:10px;padding-bottom:9px;border-bottom:1px solid var(--bone-09);
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-38);font-weight:500}
+.rost-head .sp{flex:1}
+.rost-head .rost-d button{border:0;pointer-events:none;color:var(--bone-38)}
+
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:17px 0;border-bottom:1px solid var(--bone-09)}
+.ctrl:last-child{border-bottom:0}
+.ctrl-t{font-size:15px;font-weight:300;letter-spacing:-.02em}
+.ctrl-d{display:block;font-size:11.5px;color:var(--bone-38);margin-top:3px;line-height:1.5;max-width:34ch}
+.tgl{width:46px;height:26px;border-radius:100px;border:1px solid var(--bone-18);flex:none;position:relative;
+  transition:background .25s ease,border-color .25s ease}
+.tgl::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--bone-38);transition:transform .25s cubic-bezier(.3,.7,.25,1),background .25s ease}
+.tgl.on{background:var(--bone);border-color:var(--bone)}
+.tgl.on::after{transform:translateX(20px);background:var(--ink)}
+
+/* ============================================================
+   TABLET  ≥ 700px
+   ============================================================ */
+@media (min-width:700px){
+  :root{--pad:34px}
+  body{font-size:15.5px}
+  .wrap{max-width:720px}
+  .hero{padding:60px var(--pad) 40px}
+  .hero h1{font-size:clamp(56px,8vw,72px)}
+  .meta{font-size:12px;gap:8px 26px}
+  .num{font-size:44px;min-width:64px}
+  .dayname{font-size:31px}
+  .plate-foot{padding-left:78px}
+  .sheet-head{padding:48px var(--pad) 32px}
+  .pane{padding:40px var(--pad) 60px}
+  .slot-name{font-size:22px}
+  .lede{font-size:23px}
+  .gate-opts{grid-template-columns:1fr 1fr}
+  .gate-inner{max-width:680px}
+}
+
+/* ============================================================
+   DESKTOP  ≥ 1024px — sidebar + main, no more phone column
+   ============================================================ */
+@media (min-width:1024px){
+  :root{--pad:44px}
+
+  body{display:grid;grid-template-columns:312px minmax(0,1fr);align-items:start}
+
+  /* the slide-in panel becomes a permanent rail */
+  .menu{
+    position:sticky;top:0;grid-column:1;grid-row:1;
+    width:auto;height:100vh;z-index:30;
+    transform:none !important;visibility:visible !important;
+    border-left:0;border-right:1px solid var(--bone-09);box-shadow:none;
+    transition:none;
+  }
+  .menu-scrim{display:none !important}
+  #menuClose,.burger{display:none}
+  .menu-head{position:sticky;top:0;background:var(--scrim);backdrop-filter:blur(16px);z-index:3;
+    padding-left:28px;padding-right:28px}
+  .menu .mlabel,.menu .mdays,.menu .seg,.menu .menu-foot,.menu .rolerow,.mrow{
+    padding-left:28px;padding-right:28px}
+  .mrow{padding-top:14px;padding-bottom:14px}
+  .mrow .t{font-size:19px}
+  .mrow .d{font-size:11px}
+  .menu-foot{padding-bottom:34px}
+
+  .wrap{grid-column:2;grid-row:1;max-width:1160px;margin:0 auto;padding:0 8px}
+  .mast{padding:22px var(--pad) 18px}
+  .mono{font-size:16px}
+
+  .hero{padding:86px var(--pad) 54px;display:grid;grid-template-columns:1fr auto;
+    align-items:end;column-gap:48px}
+  .hero .eyebrow{grid-column:1/-1}
+  .hero h1{font-size:clamp(72px,6.4vw,104px);margin-bottom:0;letter-spacing:-.05em}
+  .meta{flex-direction:column;align-items:flex-end;gap:10px;padding-bottom:12px}
+
+  .status{padding:22px var(--pad) 24px;display:flex;align-items:center;gap:40px}
+  .statusrow{flex:1;font-size:13px}
+  .rail{margin-top:0;width:280px;flex:none}
+
+  /* ledger reads as a schedule table, not a stack of cards */
+  .plate{display:flex;align-items:center;gap:40px;padding:26px var(--pad)}
+  .plate-top{margin-bottom:0;flex:1;min-width:0;align-items:center}
+  .num{font-size:46px;min-width:74px}
+  .dayname{font-size:30px;margin-bottom:5px}
+  .plate-foot{margin-top:0;padding-left:0;width:250px;flex:none;justify-content:flex-end}
+  .plate-foot .cut{max-width:60px}
+
+  .certwrap{
+    display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+    column-gap:46px;align-items:center;
+  }
+  .certwrap .cert-stage{padding:0}
+  .certside .cert-caption{margin-top:0}
+  .sitefoot{padding:34px var(--pad) 54px}
+
+  /* day detail becomes a dialog, not a full-screen takeover */
+  .sheet{
+    inset:0;display:grid;place-items:center;padding:40px;
+    background:rgba(0,0,0,.62);backdrop-filter:blur(5px);
+    transform:none;opacity:0;visibility:hidden;overflow:hidden;
+    transition:opacity .32s ease,visibility .32s;z-index:90;
+  }
+  html[data-theme="light"] .sheet{background:rgba(0,0,0,.34)}
+  .sheet.up{opacity:1;visibility:visible}
+  .sheet-inner{
+    width:min(900px,100%);max-width:none;max-height:min(880px,90vh);overflow-y:auto;padding-bottom:0;
+    background:var(--ink);border:1px solid var(--bone-18);border-radius:7px;
+    box-shadow:0 60px 120px -40px rgba(0,0,0,.92);
+    transform:translateY(20px) scale(.992);
+    transition:transform .38s cubic-bezier(.3,.7,.25,1);
+  }
+  .sheet.up .sheet-inner{transform:none}
+  .sheet-bar{padding:18px 30px}
+  .sheet-head{padding:46px 44px 30px}
+  .sheet-head h2{font-size:clamp(40px,3.4vw,52px)}
+  .tabs{top:57px;padding:0 32px}
+  .tab{padding:16px 14px;font-size:10px}
+  .tab::after{left:14px;right:14px}
+  .pane{padding:40px 44px 52px}
+  .pane#p-sched,.pane#p-ref,.pane#p-work,.pane#p-recap{max-width:none}
+  .slot{padding:18px 0}
+  .slot-time{width:74px;font-size:11px}
+  .slot-name{font-size:22px}
+  .fig{max-width:620px}
+  textarea{min-height:360px}
+
+  /* pointer-driven polish */
+  .chip:hover,.mday:hover{border-color:var(--bone-38);color:var(--bone)}
+  .btn:hover{background:var(--bone-09)}
+  .btn.solid:hover{opacity:.88;background:var(--bone)}
+  .rolerow:hover .rolerow-x{border-color:var(--bone-38);color:var(--bone)}
+}
+
+@media (min-width:1400px){
+  :root{--pad:60px}
+  body{grid-template-columns:340px minmax(0,1fr)}
+  .wrap{max-width:1280px}
+  .hero{padding-top:104px}
+}
+
 .toast{
   position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
   background:var(--bone);color:var(--ink);padding:12px 20px;border-radius:3px;
@@ -525,14 +963,60 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
 .toast.up{opacity:1;transform:translate(-50%,0)}
 </style>
 
+<div class="intro" id="intro" role="button" tabindex="0" aria-label="Enter">
+  <div class="intro-inner">
+    <div class="intro-mark">LTC</div>
+    <div class="intro-rule"><i></i></div>
+    <div class="intro-title">The Miami<br>Intensive</div>
+  </div>
+  <div class="intro-skip">Tap to enter</div>
+</div>
+
+<div class="gate" id="gate" aria-hidden="true">
+  <div class="gate-inner">
+    <div class="lbl gate-lbl">The Miami Intensive</div>
+    <h2 class="gate-h">Who is<br>using this?</h2>
+    <div class="gate-opts">
+      <button class="gopt" data-role="student">
+        <span class="gopt-t">Student</span>
+        <span class="gopt-d">The five days, your exercises, your notes and your certificate.</span>
+        <span class="gopt-go">Continue →</span>
+      </button>
+      <button class="gopt" data-role="instructor">
+        <span class="gopt-t">Instructor</span>
+        <span class="gopt-d">Everything above, plus decks, run of show, roster and day access.</span>
+        <span class="gopt-go">Passcode required →</span>
+      </button>
+    </div>
+    <div class="gate-code" id="gateCode">
+      <label class="lbl">Instructor passcode</label>
+      <div class="gate-coderow">
+        <input id="gateInput" type="text" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" spellcheck="false">
+        <button class="btn solid" id="gateGo" style="width:auto;padding:15px 26px;margin:0">Enter</button>
+      </div>
+      <div class="gate-err" id="gateErr"></div>
+      <button class="gate-back" id="gateBack">← Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="switching" id="switching" aria-hidden="true">
+  <div class="switching-inner">
+    <div class="sw-mark">LTC</div>
+    <div class="sw-k">Switching to</div>
+    <div class="sw-t" id="swRole">Instructor</div>
+    <div class="sw-bar"><i id="swBar"></i></div>
+    <div class="sw-step" id="swStep"></div>
+  </div>
+</div>
+
 <div class="wrap">
 
   <div class="mast">
     <button class="mono" id="mono">LTC</button>
     <div class="mast-right">
-      <button class="chip icon" id="btnTheme" aria-label="Switch between light and dark" title="Light / dark"></button>
-      <button class="chip" id="btnInfo">Venue</button>
-      <button class="chip" id="btnExport">My notes</button>
+      <span class="rolechip" id="roleChip" hidden>Instructor</span>
+      <button class="burger" id="btnMenu" aria-label="Menu" aria-expanded="false"><i></i><i></i><i></i></button>
     </div>
   </div>
 
@@ -553,31 +1037,45 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
 
   <div class="ledger" id="ledger"></div>
 
-  <section class="certblock">
-    <div class="eyebrow">Day 05 · 4:15pm</div>
-    <h2>What you<br>leave <span>with</span></h2>
-    <div class="cert-stage" id="certStage" role="button" tabindex="0" aria-label="Preview your certificate">
-      <div class="cert-rotor" id="certRotor">
-        <div class="cert-face" id="certBase"></div>
-        <div class="cert-face lit" id="certLit" aria-hidden="true"></div>
-        <div class="cert-glare"></div>
-      </div>
-      <div class="cert-shadow"></div>
-    </div>
-    <div class="cert-caption" id="certCap"></div>
-    <p class="sub">Signed, numbered and handed to you at the close on Thursday. Put your name on it now — it will read exactly like this.</p>
-    <label class="namefield">
-      <span>Name as it should appear</span>
-      <input id="certName" type="text" maxlength="26" placeholder="e.g. Marcus Bell" autocomplete="name" spellcheck="false">
-    </label>
-  </section>
-
   <div class="sitefoot">
     <span>Learn to Cut</span>
     <span>Wynwood · MMXXVI</span>
   </div>
 
 </div>
+
+<div class="menu-scrim" id="menuScrim"></div>
+<nav class="menu" id="menu" aria-hidden="true">
+  <div class="menu-head">
+    <span class="lbl">The Miami Intensive</span>
+    <button class="menu-x" id="menuClose">Close</button>
+  </div>
+
+  <div id="menuNav"></div>
+
+  <div class="mlabel">Jump to a day</div>
+  <div class="mdays" id="menuDays"></div>
+
+  <div class="mlabel">Appearance</div>
+  <div class="seg" id="menuTheme">
+    <button data-mode="dark">Dark</button>
+    <button data-mode="light">Light</button>
+  </div>
+
+  <div class="mlabel">You are signed in as</div>
+  <button class="rolerow" id="roleSwitch">
+    <span class="rolerow-l"><span class="rolerow-t" id="roleName">Student</span><span class="rolerow-d" id="roleDesc">Tap to switch</span></span>
+    <span class="rolerow-x">Switch</span>
+  </button>
+
+  <div class="menu-foot">
+    <b>64 NW 54 St, Suite 106</b>
+    Miami, FL 33127 · Wynwood<br>
+    23–27 August 2026 · 10:00 – 5:00
+    <div><a href="https://maps.google.com/?q=64+NW+54th+St+Suite+106+Miami+FL+33127" target="_blank" rel="noopener">Get directions →</a></div>
+    <div class="menu-sig">Learn to Cut · MMXXVI</div>
+  </div>
+</nav>
 
 <div class="sheet" id="sheet"><div class="sheet-inner" id="sheetInner"></div></div>
 <div class="toast" id="toast"></div>
@@ -949,10 +1447,10 @@ function certMarkup(name, id){
   </div>`;
 }
 
-const certStage = document.getElementById('certStage');
-const certRotor = document.getElementById('certRotor');
 let certName = '';
 let certHeld = false;
+let certHoldTimer = null;
+Store.get('ltc:name').then(v => { if (v){ certName = v; paintCert(); } });
 
 function certEarned(){
   const now = today();
@@ -965,54 +1463,87 @@ function certEarned(){
   return d === START_DAY + 4 && now.getHours() >= 16;
 }
 
+/* the certificate lives in its own dialog now — paint only when it is on screen */
 function paintCert(){
-  document.getElementById('certBase').innerHTML = certMarkup(certName,'a');
-  document.getElementById('certLit').innerHTML  = certMarkup(certName,'b');
+  const base = document.getElementById('certBase');
+  if (!base) return;
+  base.innerHTML = certMarkup(certName,'a');
+  document.getElementById('certLit').innerHTML = certMarkup(certName,'b');
   const earned = certEarned();
-  certStage.classList.toggle('on', earned || certHeld);
+  document.getElementById('certStage').classList.toggle('on', earned || certHeld);
   document.getElementById('certCap').innerHTML = earned
     ? `<span class="dot"></span><b>Earned</b><span>·</span><span>Thursday 27 August</span>`
     : `<span class="dot"></span><span>Sealed until <b>27 August</b></span><span>·</span><span>${certHeld?'Tap to seal':'Tap to hold the light'}</span>`;
 }
 
-certStage.addEventListener('click', () => {
-  if (certEarned()) return;
-  certHeld = !certHeld;
-  paintCert();
-});
-certStage.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); certStage.click(); }
-});
+function openCert(){
+  document.getElementById('sheetInner').innerHTML = `
+    <div class="sheet-bar"><button class="back" id="back">← ${role === 'instructor' ? 'Close' : 'All days'}</button><span class="sheet-day">Day 5 · 4:15pm</span></div>
+    <div class="sheet-head"><h2>What you<br>leave with</h2><div class="daydate">Thursday 27 August · close &amp; graduation</div></div>
+    <div class="pane on" id="p-cert">
+      <div class="certwrap">
+        <div class="cert-stage" id="certStage" role="button" tabindex="0" aria-label="Preview your certificate">
+          <div class="cert-rotor" id="certRotor">
+            <div class="cert-face" id="certBase"></div>
+            <div class="cert-face lit" id="certLit" aria-hidden="true"></div>
+            <div class="cert-glare"></div>
+          </div>
+          <div class="cert-shadow"></div>
+        </div>
+        <div class="certside">
+          <div class="cert-caption" id="certCap"></div>
+          <p class="lede">Signed, numbered and handed to you at the close on Thursday. <em>Put your name on it now</em> — it will read exactly like this.</p>
+          <label class="namefield">
+            <span>Name as it should appear</span>
+            <input id="certName" type="text" maxlength="26" placeholder="e.g. Marcus Bell" autocomplete="name" spellcheck="false">
+          </label>
+          <div class="footnote">One certificate, one number, one name. Nothing is printed until the final cut on Thursday afternoon.</div>
+        </div>
+      </div>
+    </div>`;
 
-/* tilt on pointer — the card follows your finger, then goes back to its own turn */
-let holdTimer = null;
-certStage.addEventListener('pointermove', e => {
-  const r = certStage.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width  - .5;
-  const y = (e.clientY - r.top)  / r.height - .5;
-  certRotor.style.setProperty('--ry', (x * 30).toFixed(2) + 'deg');
-  certRotor.style.setProperty('--rx', (-y * 18).toFixed(2) + 'deg');
-  certRotor.classList.add('hold');
-  clearTimeout(holdTimer);
-  holdTimer = setTimeout(() => certRotor.classList.remove('hold'), 2200);
-});
-certStage.addEventListener('pointerleave', () => {
-  clearTimeout(holdTimer);
-  certRotor.classList.remove('hold');
-});
+  const stage = document.getElementById('certStage');
+  const rotor = document.getElementById('certRotor');
+  const input = document.getElementById('certName');
+  input.value = certName;
+  paintCert();
 
-const nameInput = document.getElementById('certName');
-Store.get('ltc:name').then(v => {
-  if (v){ certName = v; nameInput.value = v; }
-  paintCert();
-});
-let nameTimer = null;
-nameInput.addEventListener('input', () => {
-  certName = nameInput.value;
-  paintCert();
-  clearTimeout(nameTimer);
-  nameTimer = setTimeout(() => Store.set('ltc:name', certName), 400);
-});
+  stage.addEventListener('click', () => {
+    if (certEarned()) return;
+    certHeld = !certHeld;
+    paintCert();
+  });
+  stage.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); stage.click(); }
+  });
+
+  /* tilt on pointer — the card follows your finger, then goes back to its own turn */
+  stage.addEventListener('pointermove', e => {
+    const r = stage.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - .5;
+    const y = (e.clientY - r.top)  / r.height - .5;
+    rotor.style.setProperty('--ry', (x * 30).toFixed(2) + 'deg');
+    rotor.style.setProperty('--rx', (-y * 18).toFixed(2) + 'deg');
+    rotor.classList.add('hold');
+    clearTimeout(certHoldTimer);
+    certHoldTimer = setTimeout(() => rotor.classList.remove('hold'), 2200);
+  });
+  stage.addEventListener('pointerleave', () => {
+    clearTimeout(certHoldTimer);
+    rotor.classList.remove('hold');
+  });
+
+  let nameTimer = null;
+  input.addEventListener('input', () => {
+    certName = input.value;
+    paintCert();
+    clearTimeout(nameTimer);
+    nameTimer = setTimeout(() => Store.set('ltc:name', certName), 400);
+  });
+
+  show();
+  primePane(document.getElementById('p-cert'));
+}
 
 /* ============================================================
    RENDER — day sheet
@@ -1085,15 +1616,7 @@ function openDay(n){
         : `<div class="emptystate">${lockIcon.replace('width="13" height="13"','width="34" height="34"')}<h4>After 5:00</h4><p>The recap for this day unlocks when the day is done.</p></div>`}
     </div>`;
 
-  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
-    t.classList.add('on');
-    const pane = document.getElementById('p-'+t.dataset.p);
-    pane.classList.add('on');
-    primePane(pane);
-    document.getElementById('sheet').scrollTop = 0;
-  }));
+  wireTabs();
   primePane(document.getElementById('p-sched'));
 
   const ta = document.getElementById('ta');
@@ -1113,16 +1636,35 @@ function openDay(n){
   show();
 }
 
+/* tabs are shared by the day sheets and the instructor panel */
+function wireTabs(){
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    const pane = document.getElementById('p-' + t.dataset.p);
+    pane.classList.add('on');
+    primePane(pane);
+    scrollSheetTop();
+  }));
+}
+/* phone: the sheet itself scrolls. desktop: the dialog inside it does. */
+function scrollSheetTop(){
+  document.getElementById('sheet').scrollTop = 0;
+  const inner = document.getElementById('sheetInner');
+  if (inner) inner.scrollTop = 0;
+}
+
 function show(){
-  const sh = document.getElementById('sheet');
-  sh.classList.add('up');
-  sh.scrollTop = 0;
+  document.getElementById('sheet').classList.add('up');
+  scrollSheetTop();
   document.body.style.overflow = 'hidden';
   document.getElementById('back').addEventListener('click', hide);
 }
 function hide(){
   document.getElementById('sheet').classList.remove('up');
   document.body.style.overflow = '';
+  clearInterval(showTimer);
   current = null;
 }
 
@@ -1140,20 +1682,18 @@ function openInfo(){
       <div class="info-row"><div class="info-k">Bring</div><div class="info-v">Your kit, your mannequin head, and something to write with.<small>The workbook is handed to you on Day 1.</small></div></div>
 
       <div class="h3" style="margin-top:38px">Dress code</div>
-      <p class="lede" style="font-size:19px">Business casual, held to a <em>neutral palette.</em> Black, white and the greys in between.</p>
+      <p class="lede" style="font-size:19px">Business casual, held to <em>black and white only.</em> No greys, no beige, no colour.</p>
       <ul class="list">
-        <li><b>Yes</b> — plain tee or knit, overshirt, tailored trouser or clean dark denim, unbranded outerwear</li>
+        <li><b>Yes</b> — plain black or white tee, knit or overshirt; tailored trouser; unbranded outerwear</li>
         <li><b>Yes</b> — clean, plain footwear you can stand in for seven hours</li>
-        <li><b>No</b> — loud prints, visible logos, sportswear, brights</li>
+        <li><b>No</b> — colour of any kind, prints, visible logos, sportswear</li>
+        <li><b>No</b> — greys, off-whites, washed blacks and faded denim</li>
       </ul>
       <div class="swatches" style="margin-bottom:34px">
         <div class="sw" style="background:#08080A"><span>Black</span></div>
-        <div class="sw" style="background:#2C2C30"><span>Charcoal</span></div>
-        <div class="sw" style="background:#6E6E76"><span>Graphite</span></div>
-        <div class="sw" style="background:#B6B6BC"><span>Ash</span></div>
-        <div class="sw" style="background:#EDEDF0"><span>White</span></div>
+        <div class="sw" style="background:#FFFFFF"><span>White</span></div>
       </div>
-      <div class="footnote">You are photographed during the week. The neutral palette is what keeps the room looking like one cohort rather than five.</div>
+      <div class="footnote">You are photographed during the week. Black and white is what keeps the room looking like one cohort rather than five.</div>
     </div>`;
   show();
   primePane(document.querySelector('.sheet-inner .pane.on'));
@@ -1236,15 +1776,11 @@ function applyTheme(t, save){
   theme = t;
   if (t === 'light') document.documentElement.setAttribute('data-theme','light');
   else document.documentElement.removeAttribute('data-theme');
-  const btn = document.getElementById('btnTheme');
-  if (btn) btn.innerHTML = (t === 'light') ? MOON : SUN;
+  if (typeof paintMenuTheme === 'function') paintMenuTheme();
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', t === 'light' ? '#F6F6F7' : '#08080A');
   if (save) Store.set('ltc:theme', t);
 }
-document.getElementById('btnTheme').addEventListener('click', () => {
-  applyTheme(theme === 'dark' ? 'light' : 'dark', true);
-});
 Store.get('ltc:theme').then(v => {
   applyTheme(v === 'light' ? 'light' : 'dark', false);
 });
@@ -1292,19 +1828,613 @@ document.getElementById('mono').addEventListener('click', () => {
   }
 });
 
-document.getElementById('btnInfo').addEventListener('click', openInfo);
-document.getElementById('btnExport').addEventListener('click', openExport);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+/* ============================================================
+   ROLE — student or instructor
+   Change INSTRUCTOR_CODE before the week runs. Students never
+   see it; it is the only thing standing in front of the panel.
+   ============================================================ */
+const INSTRUCTOR_CODE = '8412';
+
+const gate = document.getElementById('gate');
+let role = null;
+const rolePromise = Store.get('ltc:role').then(v => {
+  role = (v === 'instructor' || v === 'student') ? v : null;
+  return role;
+});
+
+function applyRole(r, save){
+  role = r;
+  const chip = document.getElementById('roleChip');
+  chip.hidden = (r !== 'instructor');
+  document.getElementById('roleName').textContent = r === 'instructor' ? 'Instructor' : 'Student';
+  document.getElementById('roleDesc').textContent = r === 'instructor'
+    ? 'Decks, run of show, roster and controls'
+    : 'The five days, your notes and your certificate';
+  paintMenuNav();
+  if (save) Store.set('ltc:role', r);
+}
+
+async function maybeGate(){
+  await rolePromise;
+  if (role){ applyRole(role); return; }
+  gate.classList.add('up');
+  gate.setAttribute('aria-hidden','false');
+}
+/* ---- the handoff ----------------------------------------------
+   Changing role changes the whole shape of the app, so it gets a
+   moment rather than a hard cut. Real work happens under it: the
+   instructor's decks and roster are read off the device here.
+   ---------------------------------------------------------------- */
+const SWITCH_MS = 3400;
+const SWITCH_STEPS = {
+  instructor: ['Passcode accepted','Loading decks and materials','Reading the run of show','Preparing the roster'],
+  student:    ['Closing the instructor panel','Loading your five days','Finding your notes','Sealing the certificate']
+};
+let switchTimer = null;
+
+function switchRole(r){
+  const ov   = document.getElementById('switching');
+  const bar  = document.getElementById('swBar');
+  const step = document.getElementById('swStep');
+  const steps = SWITCH_STEPS[r] || SWITCH_STEPS.student;
+  const ms = REDUCED ? 600 : SWITCH_MS;
+
+  document.getElementById('swRole').textContent = r === 'instructor' ? 'Instructor' : 'Student';
+  step.textContent = steps[0];
+  ov.classList.add('up');
+  ov.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+
+  /* warm the instructor's data while the bar runs, so the panel opens cold-free */
+  if (r === 'instructor') loadInstructorData();
+
+  bar.style.transition = 'none';
+  bar.style.width = '0';
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width ' + ms + 'ms cubic-bezier(.35,0,.2,1)';
+    bar.style.width = '100%';
+  });
+
+  let i = 0;
+  clearInterval(switchTimer);
+  switchTimer = setInterval(() => {
+    i++;
+    if (i >= steps.length) return clearInterval(switchTimer);
+    step.classList.add('fade');
+    setTimeout(() => { step.textContent = steps[i]; step.classList.remove('fade'); }, 260);
+  }, ms / steps.length);
+
+  /* flip the app over just before the curtain lifts */
+  setTimeout(() => {
+    clearInterval(switchTimer);
+    applyRole(r, true);
+    hide();
+    closeMenu();
+    if (r === 'student') certHeld = false;
+    paintCert();
+    renderHome();
+    paintMenuDays();
+  }, ms - 380);
+
+  setTimeout(() => {
+    ov.classList.remove('up');
+    ov.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }, ms);
+}
+
+function closeGate(r){
+  gate.classList.remove('up','asking');
+  gate.setAttribute('aria-hidden','true');
+  document.getElementById('gateInput').value = '';
+  document.getElementById('gateErr').textContent = '';
+  switchRole(r);
+}
+document.querySelectorAll('.gopt').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.role === 'student') return closeGate('student');
+  gate.classList.add('asking');
+  setTimeout(() => document.getElementById('gateInput').focus(), 60);
+}));
+document.getElementById('gateBack').addEventListener('click', () => {
+  gate.classList.remove('asking');
+  document.getElementById('gateErr').textContent = '';
+});
+function tryCode(){
+  const v = document.getElementById('gateInput').value.trim();
+  if (v === INSTRUCTOR_CODE) return closeGate('instructor');
+  const err = document.getElementById('gateErr');
+  err.textContent = 'Not that one — try again';
+  document.getElementById('gateInput').value = '';
+}
+document.getElementById('gateGo').addEventListener('click', tryCode);
+document.getElementById('gateInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryCode();
+});
+
+/* ============================================================
+   INSTRUCTOR PANEL
+   ============================================================ */
+let decks = null, roster = null, showDay = 0, tnoteDay = 0, showTimer = null, iSaveTimer = null;
+
+function defaultDecks(){
+  return DAYS.map(d => ({ t: 'Day ' + d.n + ' — ' + d.title.replace('&amp;','&'), u: '' }));
+}
+async function loadInstructorData(){
+  if (!decks){
+    const raw = await Store.get('ltc:decks');
+    try { decks = raw ? JSON.parse(raw) : defaultDecks(); } catch(e){ decks = defaultDecks(); }
+  }
+  if (!roster){
+    const raw = await Store.get('ltc:roster');
+    try { roster = raw ? JSON.parse(raw) : []; } catch(e){ roster = []; }
+  }
+}
+const saveDecks  = () => Store.set('ltc:decks',  JSON.stringify(decks));
+const saveRoster = () => Store.set('ltc:roster', JSON.stringify(roster));
+
+/* '10:00' / '2:45' → minutes since midnight, reading the schedule as 10am–5pm */
+function toMin(t){
+  const p = t.split(':'); let h = +p[0]; const m = +p[1];
+  if (h !== 12 && h < 9) h += 12;
+  return h * 60 + m;
+}
+function fmtMin(x){
+  const h = Math.floor(x / 60), m = x % 60;
+  const hh = h > 12 ? h - 12 : h;
+  return hh + ':' + String(m).padStart(2,'0');
+}
+function liveDay(){
+  const c = dayIndexNow();
+  return (c >= 1 && c <= 5) ? c : 1;
+}
+
+function deckRows(){
+  return decks.map((d, i) => `
+    <div class="deck" data-i="${i}">
+      <div class="deck-h">
+        <span class="deck-n">${String(i+1).padStart(2,'0')}</span>
+        <input class="ifield dk-t" value="${esc(d.t)}" placeholder="What is this deck">
+        <button class="mini x" data-del="${i}">Remove</button>
+      </div>
+      <div class="deck-r">
+        <input class="ifield url dk-u" value="${esc(d.u)}" placeholder="Paste a link — Slides, Keynote, PDF, Drive, YouTube">
+        <a class="mini ${d.u ? 'solid' : 'off'}" data-open="${i}" href="${d.u ? esc(d.u) : '#'}" target="_blank" rel="noopener">Open</a>
+      </div>
+    </div>`).join('');
+}
+
+function renderShowPane(){
+  const pane = document.getElementById('p-show');
+  if (!pane) return;
+  const d = DAYS[showDay - 1];
+  const now = today();
+  const isToday = dayIndexNow() === showDay;
+  const mins = now.getHours() * 60 + now.getMinutes();
+
+  const rows = d.schedule.map((x, i) => {
+    const s = toMin(x.t);
+    const e = i + 1 < d.schedule.length ? toMin(d.schedule[i+1].t) : 17 * 60;
+    return {x, s, e};
+  });
+  const cur = isToday ? rows.find(r => mins >= r.s && mins < r.e) : null;
+  const next = isToday ? rows.find(r => r.s > mins) : null;
+
+  let head = '';
+  if (cur){
+    head = `<div class="nowcard">
+      <div class="k">On now · ends ${fmtMin(cur.e)}</div>
+      <div class="t">${cur.x.n}</div>
+      ${cur.x.d ? `<div class="d">${cur.x.d}</div>` : ''}
+      <div class="clock">${cur.e - mins} min left${next ? ` · next: ${next.x.n} at ${next.x.t}` : ' · last session of the day'}</div>
+    </div>`;
+  } else if (isToday && next){
+    head = `<div class="nowcard">
+      <div class="k">Up next</div>
+      <div class="t">${next.x.n}</div>
+      ${next.x.d ? `<div class="d">${next.x.d}</div>` : ''}
+      <div class="clock">Starts ${next.x.t} · in ${next.s - mins} min</div>
+    </div>`;
+  } else if (isToday){
+    head = `<div class="nowcard"><div class="k">Today</div><div class="t">Day ${showDay} is done</div>
+      <div class="d">The recap unlocks for students at 5:00.</div></div>`;
+  }
+
+  pane.innerHTML = `
+    <div class="mdays" id="showDays" style="padding:0 0 22px">
+      ${DAYS.map(x => `<button class="mday ${x.n === showDay ? 'today' : 'open'}" data-n="${x.n}">${String(x.n).padStart(2,'0')}</button>`).join('')}
+    </div>
+    ${head}
+    <div class="h3">${d.date} · ${d.schedule.length} sessions</div>
+    ${rows.map(r => {
+      const st = isToday ? (mins >= r.e ? 'is-done' : (cur && r.s === cur.s ? 'is-now' : '')) : '';
+      return `<div class="slot ${r.x.brk ? 'break' : ''} ${st}">
+        <div class="slot-time">${r.x.t}</div>
+        <div><div class="slot-name">${r.x.n}</div>
+        ${r.x.d ? `<div class="slot-note">${r.x.d}</div>` : ''}
+        <div class="slot-note" style="opacity:.5;margin-top:3px">${r.e - r.s} min</div></div>
+      </div>`;
+    }).join('')}
+    ${!isToday ? `<div class="footnote">Live timing shows on the day itself. This is the plan as written.</div>` : ''}`;
+
+  pane.querySelectorAll('#showDays .mday').forEach(b => b.addEventListener('click', () => {
+    showDay = +b.dataset.n;
+    renderShowPane();
+  }));
+}
+
+function renderRosterPane(){
+  const pane = document.getElementById('p-roster');
+  if (!pane) return;
+  pane.innerHTML = `
+    <p class="lede">Who is in the room. <em>Saved on this device only.</em></p>
+    <div class="rost-head">
+      <span class="sp">${roster.length} student${roster.length === 1 ? '' : 's'}</span>
+      <span class="rost-d">${[1,2,3,4,5].map(n => `<button>${n}</button>`).join('')}</span>
+      <span style="width:26px"></span>
+    </div>
+    ${roster.map((r, i) => `
+      <div class="rost" data-i="${i}">
+        <input class="ifield rs-n" value="${esc(r.n)}" placeholder="Name">
+        <span class="rost-d">${r.a.map((on, k) => `<button class="${on ? 'in' : ''}" data-a="${k}">${k+1}</button>`).join('')}</span>
+        <button class="mini x" data-del="${i}">×</button>
+      </div>`).join('')}
+    <div style="display:flex;gap:10px;margin-top:22px">
+      <button class="mini solid" id="rosterAdd">+ Add student</button>
+      <button class="mini" id="rosterCopy">Copy list</button>
+    </div>
+    <div class="footnote">Tap 1–5 to mark a student present for that day. Certificates are printed against this list.</div>`;
+
+  pane.querySelector('#rosterAdd').addEventListener('click', () => {
+    roster.push({n:'', a:[false,false,false,false,false]});
+    saveRoster(); renderRosterPane();
+    const inputs = pane.querySelectorAll('.rs-n');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+  pane.querySelector('#rosterCopy').addEventListener('click', async () => {
+    const txt = roster.map(r => r.n + ' — days present: ' + r.a.map((v,k)=>v?k+1:'').filter(Boolean).join(', ')).join('\n');
+    try { await navigator.clipboard.writeText(txt || 'No students yet'); toast('Copied'); } catch(e){ toast('Copy failed'); }
+  });
+  pane.querySelectorAll('.rost').forEach(row => {
+    const i = +row.dataset.i;
+    row.querySelector('.rs-n').addEventListener('input', e => {
+      roster[i].n = e.target.value;
+      clearTimeout(iSaveTimer); iSaveTimer = setTimeout(saveRoster, 400);
+    });
+    row.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
+      const k = +b.dataset.a;
+      roster[i].a[k] = !roster[i].a[k];
+      b.classList.toggle('in', roster[i].a[k]);
+      saveRoster();
+    }));
+    row.querySelector('[data-del]').addEventListener('click', () => {
+      roster.splice(i, 1); saveRoster(); renderRosterPane();
+    });
+  });
+}
+
+function renderTNotesPane(){
+  const pane = document.getElementById('p-tnotes');
+  if (!pane) return;
+  pane.innerHTML = `
+    <div class="mdays" id="tnDays" style="padding:0 0 22px">
+      ${DAYS.map(x => `<button class="mday ${x.n === tnoteDay ? 'today' : 'open'}" data-n="${x.n}">${String(x.n).padStart(2,'0')}</button>`).join('')}
+    </div>
+    <p class="lede">Teaching notes for <em>Day ${tnoteDay}</em>. Separate from student notes — nobody else sees these.</p>
+    <textarea id="tnTa" placeholder="What to hit, what to cut, what went long…"></textarea>
+    <div class="saved" id="tnSaved"></div>`;
+
+  const ta = pane.querySelector('#tnTa');
+  Store.get('ltc:tnotes:' + tnoteDay).then(v => { if (v) ta.value = v; });
+  ta.addEventListener('input', () => {
+    clearTimeout(iSaveTimer);
+    iSaveTimer = setTimeout(async () => {
+      await Store.set('ltc:tnotes:' + tnoteDay, ta.value);
+      const m = pane.querySelector('#tnSaved');
+      if (!m) return;
+      m.textContent = 'Saved'; m.classList.add('flash');
+      setTimeout(() => m.classList.remove('flash'), 900);
+    }, 500);
+  });
+  pane.querySelectorAll('#tnDays .mday').forEach(b => b.addEventListener('click', () => {
+    tnoteDay = +b.dataset.n; renderTNotesPane();
+  }));
+}
+
+function renderControlsPane(){
+  const pane = document.getElementById('p-controls');
+  if (!pane) return;
+  pane.innerHTML = `
+    <p class="lede">What the students see, from here.</p>
+    <div class="ctrl">
+      <span><span class="ctrl-t">Unlock all five days</span>
+        <span class="ctrl-d">Off means each day opens on the morning it runs. On is for building and rehearsing.</span></span>
+      <button class="tgl ${override ? 'on' : ''}" id="tgUnlock" aria-label="Unlock all days"></button>
+    </div>
+    <div class="ctrl">
+      <span><span class="ctrl-t">Hold the certificate open</span>
+        <span class="ctrl-d">Opens the certificate unsealed, so you can put it on the screen and show the room what they are working toward.</span></span>
+      <button class="tgl ${certHeld ? 'on' : ''}" id="tgCert" aria-label="Reveal certificate"></button>
+    </div>
+    <div class="ctrl">
+      <span><span class="ctrl-t">Back to the student view</span>
+        <span class="ctrl-d">Hides the instructor panel on this device. The passcode brings it back.</span></span>
+      <button class="mini" id="ctlStudent">Switch</button>
+    </div>
+    <div class="h3" style="margin-top:40px">Danger</div>
+    <div class="ctrl">
+      <span><span class="ctrl-t">Clear instructor data</span>
+        <span class="ctrl-d">Wipes decks, roster and teaching notes on this device. Student notes are untouched.</span></span>
+      <button class="mini" id="ctlWipe">Clear</button>
+    </div>
+    <div class="footnote">Everything in this panel lives on this device only — there is no server behind it. Use a laptop you will still have in Miami.</div>`;
+
+  pane.querySelector('#tgUnlock').addEventListener('click', e => {
+    override = !override;
+    e.currentTarget.classList.toggle('on', override);
+    Store.set('ltc:unlock', override ? '1' : '0');
+    renderHome(); paintMenuDays();
+    toast(override ? 'All days unlocked' : 'Back to live dates');
+  });
+  pane.querySelector('#tgCert').addEventListener('click', e => {
+    certHeld = !certHeld;
+    e.currentTarget.classList.toggle('on', certHeld);
+    paintCert();
+  });
+  pane.querySelector('#ctlStudent').addEventListener('click', () => switchRole('student'));
+  pane.querySelector('#ctlWipe').addEventListener('click', async () => {
+    if (!confirm('Clear decks, roster and teaching notes on this device?')) return;
+    decks = defaultDecks(); roster = [];
+    await saveDecks(); await saveRoster();
+    for (const d of DAYS) await Store.set('ltc:tnotes:' + d.n, '');
+    toast('Cleared');
+    renderControlsPane();
+  });
+}
+
+async function openInstructor(startTab){
+  await loadInstructorData();
+  if (!showDay) showDay = liveDay();
+  if (!tnoteDay) tnoteDay = liveDay();
+
+  const tabs = [['decks','Decks'],['show','Run of show'],['roster','Roster'],['tnotes','Notes'],['controls','Controls']];
+  const start = tabs.some(t => t[0] === startTab) ? startTab : 'decks';
+
+  document.getElementById('sheetInner').innerHTML = `
+    <div class="sheet-bar"><button class="back" id="back">← ${role === 'instructor' ? 'Close' : 'All days'}</button><span class="sheet-day">Instructor</span></div>
+    <div class="sheet-head"><h2>Instructor<br>panel</h2><div class="daydate">Miami · 23–27 August 2026</div></div>
+    <div class="tabs">${tabs.map(t => `<button class="tab ${t[0] === start ? 'on' : ''}" data-p="${t[0]}">${t[1]}</button>`).join('')}</div>
+    <div class="pane ${start === 'decks' ? 'on' : ''}" id="p-decks">
+      <p class="lede">Every deck and handout for the week, one tap from the room. <em>Paste the link once</em> — it stays on this device.</p>
+      <div id="deckList">${deckRows()}</div>
+      <button class="mini solid" id="deckAdd" style="margin-top:16px">+ Add material</button>
+      <div class="footnote">Links open in a new tab. Google Slides, Keynote Live, a PDF in Drive, a YouTube video — anything with a URL. Set them up before you fly.</div>
+    </div>
+    <div class="pane ${start === 'show' ? 'on' : ''}" id="p-show"></div>
+    <div class="pane ${start === 'roster' ? 'on' : ''}" id="p-roster"></div>
+    <div class="pane ${start === 'tnotes' ? 'on' : ''}" id="p-tnotes"></div>
+    <div class="pane ${start === 'controls' ? 'on' : ''}" id="p-controls"></div>`;
+
+  wireDecks();
+  renderShowPane(); renderRosterPane(); renderTNotesPane(); renderControlsPane();
+  wireTabs();
+  primePane(document.getElementById('p-' + start));
+
+  clearInterval(showTimer);
+  showTimer = setInterval(() => {
+    const p = document.getElementById('p-show');
+    if (p && p.classList.contains('on')) renderShowPane();
+    else if (!p) clearInterval(showTimer);
+  }, 30000);
+
+  show();
+}
+
+function wireDecks(){
+  const list = document.getElementById('deckList');
+  if (!list) return;
+  list.querySelectorAll('.deck').forEach(row => {
+    const i = +row.dataset.i;
+    const t = row.querySelector('.dk-t'), u = row.querySelector('.dk-u'), a = row.querySelector('[data-open]');
+    const push = () => { clearTimeout(iSaveTimer); iSaveTimer = setTimeout(saveDecks, 400); };
+    t.addEventListener('input', () => { decks[i].t = t.value; push(); });
+    u.addEventListener('input', () => {
+      let v = u.value.trim();
+      decks[i].u = v;
+      if (v && !/^https?:\/\//i.test(v)) v = 'https://' + v;
+      a.href = v || '#';
+      a.classList.toggle('off', !v);
+      a.classList.toggle('solid', !!v);
+      push();
+    });
+    row.querySelector('[data-del]').addEventListener('click', () => {
+      decks.splice(i, 1); saveDecks();
+      document.getElementById('deckList').innerHTML = deckRows();
+      wireDecks();
+    });
+  });
+  const add = document.getElementById('deckAdd');
+  if (add && !add.dataset.wired){
+    add.dataset.wired = '1';
+    add.addEventListener('click', () => {
+      decks.push({t:'', u:''}); saveDecks();
+      document.getElementById('deckList').innerHTML = deckRows();
+      wireDecks();
+      const fields = document.querySelectorAll('.dk-t');
+      if (fields.length) fields[fields.length - 1].focus();
+    });
+  }
+}
+
+/* remember the instructor's day-access choice across reloads */
+Store.get('ltc:unlock').then(v => {
+  if (v === '1' || v === '0'){ override = (v === '1'); renderHome(); }
+});
+
+/* ============================================================
+   MENU
+   ============================================================ */
+const menu = document.getElementById('menu');
+const menuScrim = document.getElementById('menuScrim');
+const burger = document.getElementById('btnMenu');
+let menuOpen = false;
+
+function paintMenuDays(){
+  document.getElementById('menuDays').innerHTML = DAYS.map(d => {
+    const s = stateFor(d.n);
+    return `<button class="mday ${s === 'locked' ? '' : 'open'} ${s === 'today' ? 'today' : ''}"
+      data-n="${d.n}" ${s === 'locked' ? 'disabled' : ''} title="${d.title.replace('&amp;','&')}">
+      ${String(d.n).padStart(2,'0')}</button>`;
+  }).join('');
+  document.querySelectorAll('.mday').forEach(b => b.addEventListener('click', () => {
+    if (b.disabled) return;
+    runFromMenu(() => openDay(+b.dataset.n));
+  }));
+}
+
+function openMenu(){
+  menuOpen = true;
+  paintMenuNav();
+  paintMenuDays();
+  paintMenuTheme();
+  menu.classList.add('up');
+  menu.setAttribute('aria-hidden','false');
+  menuScrim.classList.add('up');
+  burger.classList.add('on');
+  burger.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+  menu.querySelectorAll('.mrow, .mlabel, .mdays, .seg, .menu-foot').forEach((el, i) => {
+    el.classList.remove('enter-sm');
+    void el.offsetWidth;
+    el.style.setProperty('--d', (70 + i * 42) + 'ms');
+    el.classList.add('enter-sm');
+  });
+}
+function closeMenu(){
+  menuOpen = false;
+  menu.classList.remove('up');
+  menu.setAttribute('aria-hidden','true');
+  menuScrim.classList.remove('up');
+  burger.classList.remove('on');
+  burger.setAttribute('aria-expanded','false');
+  if (!document.getElementById('sheet').classList.contains('up')) document.body.style.overflow = '';
+}
+/* let the panel slide out before the next screen arrives */
+function runFromMenu(fn){ closeMenu(); setTimeout(fn, 260); }
+
+burger.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+menuScrim.addEventListener('click', closeMenu);
+document.getElementById('menuClose').addEventListener('click', closeMenu);
+
+const NAV = {
+  student: [
+    ['notes',  'My notes',        'Everything you have written, ready to take home'],
+    ['cert',   'Your certificate','Sealed until Thursday 27 August'],
+    ['venue',  'Venue &amp; dress','Address, hours and the black-and-white dress code'],
+    ['days',   'The five days',   'Back to the full week']
+  ],
+  instructor: [
+    ['i:decks',    'Decks &amp; materials','Every presentation and handout, one tap from the room'],
+    ['i:show',     'Run of show',          'Today’s timing, live — what is on now and what is next'],
+    ['i:roster',   'Roster',               'Who is in the room and who was here each day'],
+    ['i:tnotes',   'Teaching notes',       'Your own notes, per day, private to this device'],
+    ['i:controls', 'Controls',             'Day access, certificate reveal and device data'],
+    ['cert',       'The certificate',      'Show the room what Thursday afternoon looks like'],
+    ['venue',      'Venue &amp; dress',    'Address, hours and the dress code you set'],
+    ['days',       'The five days',        'The student view of the week']
+  ]
+};
+
+function paintMenuNav(){
+  const rows = NAV[role === 'instructor' ? 'instructor' : 'student'];
+  document.getElementById('menuNav').innerHTML = rows.map((r, i) => `
+    <button class="mrow" data-go="${r[0]}">
+      <span class="k">${String(i+1).padStart(2,'0')}</span>
+      <span><span class="t">${r[1]}</span><span class="d">${r[2]}</span></span>
+    </button>`).join('');
+}
+
+document.getElementById('menuNav').addEventListener('click', e => {
+  const r = e.target.closest('.mrow');
+  if (!r) return;
+  const go = r.dataset.go;
+  if (go.startsWith('i:')) return runFromMenu(() => openInstructor(go.slice(2)));
+  if (go === 'notes')  return runFromMenu(openExport);
+  if (go === 'venue')  return runFromMenu(openInfo);
+  if (go === 'cert')   return runFromMenu(openCert);
+  if (go === 'days')   return runFromMenu(() => {
+    hide();
+    window.scrollTo({top: document.querySelector('.ledger').offsetTop - 60, behavior:'smooth'});
+  });
+});
+
+document.getElementById('roleSwitch').addEventListener('click', () => runFromMenu(() => {
+  if (role === 'instructor') return switchRole('student');
+  gate.classList.add('up','asking');
+  gate.setAttribute('aria-hidden','false');
+  setTimeout(() => document.getElementById('gateInput').focus(), 80);
+}));
+
+/* desktop: the day sheet is a dialog — clicking the backdrop closes it */
+document.getElementById('sheet').addEventListener('click', e => {
+  if (e.target.id === 'sheet') hide();
+});
+
+function paintMenuTheme(){
+  document.querySelectorAll('#menuTheme button').forEach(b => {
+    b.innerHTML = (b.dataset.mode === 'dark' ? MOON : SUN) + b.dataset.mode.replace(/^./, c => c.toUpperCase());
+    b.classList.toggle('on', b.dataset.mode === theme);
+  });
+}
+document.querySelectorAll('#menuTheme button').forEach(b => b.addEventListener('click', () => {
+  applyTheme(b.dataset.mode, true);
+  paintMenuTheme();
+}));
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (menuOpen) closeMenu(); else hide();
+});
+
+/* on desktop the rail is always on screen, so it has to be painted
+   at startup rather than only when the panel is opened */
+paintMenuNav(); paintMenuDays(); paintMenuTheme();
 
 renderHome();
 
-/* first-load entrance */
-[['.eyebrow',0],['.hero h1',70],['.hero .meta',180],['.status',260]].forEach(([sel,d]) => {
-  const el = document.querySelector(sel);
-  if (el){ el.classList.add('enter'); el.style.setProperty('--d', d + 'ms'); }
+/* ============================================================
+   INTRO — everything inside .wrap is animation-paused until the
+   curtain lifts, so the home entrance plays for a live audience.
+   ============================================================ */
+function startHome(){
+  [['.hero .eyebrow',0],['.hero h1',70],['.hero .meta',180],['.status',260]].forEach(([sel,d]) => {
+    const el = document.querySelector(sel);
+    if (el){ el.classList.add('enter'); el.style.setProperty('--d', d + 'ms'); }
+  });
+}
+
+const intro = document.getElementById('intro');
+let introDone = false;
+function endIntro(){
+  if (introDone) return;
+  introDone = true;
+  document.documentElement.classList.remove('booting');
+  intro.classList.add('out');
+  setTimeout(() => intro.classList.add('gone'), 700);
+  startHome();
+  maybeGate();
+}
+intro.addEventListener('click', endIntro);
+intro.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape'){ e.preventDefault(); endIntro(); }
 });
-[['.certblock h2',0],['.cert-stage',90],['.cert-caption',180],['.certblock .sub',230],['.namefield',280]].forEach(([sel,d]) => {
-  const el = document.querySelector(sel);
-  if (el){ el.classList.add('enter-sm'); el.style.setProperty('--d', d + 'ms'); }
+
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+Store.get('ltc:seen').then(v => {
+  Store.set('ltc:seen', String(Date.now()));
+  if (REDUCED){ endIntro(); return; }
+  const warm = v && (Date.now() - +v) < 4 * 3600 * 1000;   // back within 4 hours = short run
+  if (warm) intro.classList.add('quick');
+  setTimeout(endIntro, warm ? 1000 : 2500);
 });
+setTimeout(endIntro, 4200); // never leave anyone stuck behind the curtain
 </script>
