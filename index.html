@@ -819,6 +819,28 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
 .rost-head .sp{flex:1}
 .rost-head .rost-d button{border:0;pointer-events:none;color:var(--bone-38)}
 
+.accquick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.accrow{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--bone-09)}
+.accrow .n{font-size:9.5px;letter-spacing:.14em;color:var(--bone-18);font-weight:500;
+  width:19px;flex:none;font-variant-numeric:tabular-nums}
+.accrow .l{flex:1;min-width:0}
+.accrow .t{display:block;font-size:14.5px;font-weight:300;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.accrow .s{display:block;font-size:10.5px;color:var(--bone-38);margin-top:3px}
+.tri{display:flex;border:1px solid var(--bone-09);border-radius:100px;padding:2px;gap:2px;flex:none}
+.tri button{
+  padding:7px 11px;border-radius:100px;font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:500;color:var(--bone-38);white-space:nowrap;
+  transition:background .2s ease,color .2s ease;
+}
+.tri button.on{background:var(--bone);color:var(--ink);font-weight:600}
+@media (max-width:479px){
+  .accrow{flex-wrap:wrap}
+  .accrow .l{min-width:calc(100% - 32px)}
+  .tri{width:100%;margin-top:4px}
+  .tri button{flex:1}
+}
+
 .ctrl{display:flex;align-items:center;justify-content:space-between;gap:16px;
   padding:17px 0;border-bottom:1px solid var(--bone-09)}
 .ctrl:last-child{border-bottom:0}
@@ -1026,7 +1048,6 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
     <div class="meta">
       <span><i></i>Aug 23–27, 2026</span>
       <span><i></i>10:00 – 5:00 daily</span>
-      <span><i></i>Wynwood, Miami</span>
     </div>
   </div>
 
@@ -1315,12 +1336,33 @@ const DAYS = [
 /* ============================================================
    STATE
    ============================================================ */
-/* BUILD MODE — every day unlocked while Tosin is still building.
-   Set to false before this goes to students, or tap the LTC monogram 5x. */
+/* DAY ACCESS — every day is 'auto', 'open' or 'locked'.
+   'auto' follows the calendar; the other two are the instructor
+   overriding it from the panel. The certificate works the same way.
+   BUILD_UNLOCK is only the starting point on a fresh device. */
 const BUILD_UNLOCK = true;
-let override = BUILD_UNLOCK;
+let access = { days:{}, cert:'auto' };
+DAYS.forEach(d => { access.days[d.n] = BUILD_UNLOCK ? 'open' : 'auto'; });
+
 let current = null;
 let saveTimer = null;
+
+const saveAccess = () => Store.set('ltc:access', JSON.stringify(access));
+Store.get('ltc:access').then(v => {
+  if (!v) return;
+  try {
+    const a = JSON.parse(v);
+    if (a && a.days) access = { days: Object.assign({}, access.days, a.days), cert: a.cert || 'auto' };
+    renderHome(); paintMenuDays(); paintCert();
+  } catch(e){}
+});
+
+function dayAccess(n){ return access.days[n] || 'auto'; }
+function allOpen(){ return DAYS.every(d => dayAccess(d.n) === 'open'); }
+function setAllAccess(v){
+  DAYS.forEach(d => { access.days[d.n] = v; });
+  saveAccess(); renderHome(); paintMenuDays();
+}
 
 function today(){ return new Date(); }
 function dayIndexNow(){
@@ -1333,14 +1375,17 @@ function dayIndexNow(){
   return Math.min(5, d - START_DAY + 1);
 }
 function stateFor(n){
-  if (override) return 'done';
-  const cur = dayIndexNow();
-  if (n < cur) return 'done';
+  const a = dayAccess(n), cur = dayIndexNow();
+  if (a === 'locked') return 'locked';
+  if (a === 'open')   return n === cur ? 'today' : 'done';
+  if (n < cur)   return 'done';
   if (n === cur) return 'today';
   return 'locked';
 }
 function recapReady(n){
-  if (override) return true;
+  const a = dayAccess(n);
+  if (a === 'locked') return false;
+  if (a === 'open')   return true;
   const cur = dayIndexNow();
   if (n < cur) return true;
   if (n === cur) return today().getHours() >= RECAP_HOUR;
@@ -1356,7 +1401,7 @@ const lockIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" st
 function renderHome(){
   const cur = dayIndexNow();
   const st = document.getElementById('statusText');
-  if (override){ st.innerHTML = 'Build preview — <strong style="color:var(--bone);font-weight:500">all five days unlocked.</strong> Tap the LTC mark five times for live dates.'; }
+  if (allOpen()){ st.innerHTML = 'All five days are <strong style="color:var(--bone);font-weight:500">open</strong> — work through them at your own pace.'; }
   else if (cur === 0) st.textContent = 'Doors open Sunday 23 August, 10:00. Day titles are below — each day opens on the morning it runs.';
   else if (cur > 5) st.textContent = 'The intensive is complete. All five days stay open here, and your notes are still yours to export.';
   else st.innerHTML = `Day ${cur} is open — <strong style="color:var(--bone);font-weight:500">${DAYS[cur-1].title}</strong>`;
@@ -1453,6 +1498,8 @@ let certHoldTimer = null;
 Store.get('ltc:name').then(v => { if (v){ certName = v; paintCert(); } });
 
 function certEarned(){
+  if (access.cert === 'open')   return true;
+  if (access.cert === 'sealed') return false;
   const now = today();
   if (now.getFullYear() > YEAR) return true;
   if (now.getFullYear() < YEAR) return false;
@@ -1822,9 +1869,9 @@ document.getElementById('mono').addEventListener('click', () => {
   tapTimer = setTimeout(()=>{ taps = 0; }, 1400);
   if (taps >= 5){
     taps = 0;
-    override = !override;
-    renderHome();
-    toast(override ? 'All days unlocked' : 'Back to live dates');
+    const open = !allOpen();
+    setAllAccess(open ? 'open' : 'auto');
+    toast(open ? 'All days unlocked' : 'Back to live dates');
   }
 });
 
@@ -2140,46 +2187,92 @@ function renderTNotesPane(){
   }));
 }
 
+function accStatus(n){
+  const a = dayAccess(n), s = stateFor(n), d = DAYS[n-1];
+  if (a === 'open')   return s === 'today' ? 'Held open · runs today' : 'Held open';
+  if (a === 'locked') return 'Held locked';
+  if (s === 'locked') return 'Opens ' + d.date.split('·')[1].trim();
+  if (s === 'today')  return 'Open — today';
+  return 'Open — done';
+}
+function certStatus(){
+  if (access.cert === 'open')   return 'Released — students can see it now';
+  if (access.cert === 'sealed') return 'Held sealed — stays dark whatever the date';
+  return certEarned() ? 'Released by the calendar' : 'Seals until Thursday 27 August, 4:00pm';
+}
+function tri(kind, n, val, opts){
+  return `<span class="tri" data-kind="${kind}" data-n="${n}">${
+    opts.map(o => `<button data-v="${o[0]}" class="${val === o[0] ? 'on' : ''}">${o[1]}</button>`).join('')
+  }</span>`;
+}
+
 function renderControlsPane(){
   const pane = document.getElementById('p-controls');
   if (!pane) return;
+  const DAY_OPTS  = [['auto','Auto'],['open','Open'],['locked','Lock']];
+  const CERT_OPTS = [['auto','Auto'],['open','Release'],['sealed','Seal']];
+
   pane.innerHTML = `
-    <p class="lede">What the students see, from here.</p>
-    <div class="ctrl">
-      <span><span class="ctrl-t">Unlock all five days</span>
-        <span class="ctrl-d">Off means each day opens on the morning it runs. On is for building and rehearsing.</span></span>
-      <button class="tgl ${override ? 'on' : ''}" id="tgUnlock" aria-label="Unlock all days"></button>
+    <p class="lede">What the students can reach, <em>day by day.</em></p>
+
+    <div class="h3">Day access</div>
+    <div class="accquick">
+      <button class="mini" data-all="auto">Follow the calendar</button>
+      <button class="mini" data-all="open">Open all</button>
+      <button class="mini" data-all="locked">Lock all</button>
     </div>
-    <div class="ctrl">
-      <span><span class="ctrl-t">Hold the certificate open</span>
-        <span class="ctrl-d">Opens the certificate unsealed, so you can put it on the screen and show the room what they are working toward.</span></span>
-      <button class="tgl ${certHeld ? 'on' : ''}" id="tgCert" aria-label="Reveal certificate"></button>
+    ${DAYS.map(d => `
+      <div class="accrow" data-n="${d.n}">
+        <span class="n">${String(d.n).padStart(2,'0')}</span>
+        <span class="l"><span class="t">${d.title}</span><span class="s">${accStatus(d.n)}</span></span>
+        ${tri('day', d.n, dayAccess(d.n), DAY_OPTS)}
+      </div>`).join('')}
+    <div class="footnote" style="margin-top:20px">
+      <b style="color:var(--bone-60);font-weight:500">Auto</b> opens a day on the morning it runs and unlocks its recap at 5:00.
+      <b style="color:var(--bone-60);font-weight:500">Open</b> and <b style="color:var(--bone-60);font-weight:500">Lock</b> ignore the date until you set them back to Auto.
     </div>
+
+    <div class="h3">The certificate</div>
+    <div class="accrow" data-n="cert">
+      <span class="n">05</span>
+      <span class="l"><span class="t">Certificate of completion</span><span class="s">${certStatus()}</span></span>
+      ${tri('cert', 'cert', access.cert, CERT_OPTS)}
+    </div>
+    <div class="footnote" style="margin-top:20px">Release it at the close on Thursday and every student's certificate lifts out of the dark at once — with their own name already on it.</div>
+
+    <div class="h3">This device</div>
     <div class="ctrl">
       <span><span class="ctrl-t">Back to the student view</span>
-        <span class="ctrl-d">Hides the instructor panel on this device. The passcode brings it back.</span></span>
+        <span class="ctrl-d">Hides the instructor panel here. The passcode brings it back.</span></span>
       <button class="mini" id="ctlStudent">Switch</button>
     </div>
-    <div class="h3" style="margin-top:40px">Danger</div>
     <div class="ctrl">
       <span><span class="ctrl-t">Clear instructor data</span>
         <span class="ctrl-d">Wipes decks, roster and teaching notes on this device. Student notes are untouched.</span></span>
       <button class="mini" id="ctlWipe">Clear</button>
     </div>
-    <div class="footnote">Everything in this panel lives on this device only — there is no server behind it. Use a laptop you will still have in Miami.</div>`;
+    <div class="footnote">Access is set per device — it is not pushed to the students' phones. Set it on the machine you are teaching from and tell the room.</div>`;
 
-  pane.querySelector('#tgUnlock').addEventListener('click', e => {
-    override = !override;
-    e.currentTarget.classList.toggle('on', override);
-    Store.set('ltc:unlock', override ? '1' : '0');
-    renderHome(); paintMenuDays();
-    toast(override ? 'All days unlocked' : 'Back to live dates');
-  });
-  pane.querySelector('#tgCert').addEventListener('click', e => {
-    certHeld = !certHeld;
-    e.currentTarget.classList.toggle('on', certHeld);
-    paintCert();
-  });
+  pane.querySelectorAll('.accquick .mini').forEach(b => b.addEventListener('click', () => {
+    setAllAccess(b.dataset.all);
+    renderControlsPane();
+    toast(b.dataset.all === 'auto' ? 'Back to live dates' : b.dataset.all === 'open' ? 'All days open' : 'All days locked');
+  }));
+
+  pane.querySelectorAll('.tri button').forEach(b => b.addEventListener('click', () => {
+    const box = b.closest('.tri'), v = b.dataset.v;
+    if (box.dataset.kind === 'cert'){
+      access.cert = v;
+      certHeld = false;
+      paintCert();
+    } else {
+      access.days[+box.dataset.n] = v;
+      renderHome(); paintMenuDays();
+    }
+    saveAccess();
+    renderControlsPane();
+  }));
+
   pane.querySelector('#ctlStudent').addEventListener('click', () => switchRole('student'));
   pane.querySelector('#ctlWipe').addEventListener('click', async () => {
     if (!confirm('Clear decks, roster and teaching notes on this device?')) return;
@@ -2264,11 +2357,6 @@ function wireDecks(){
     });
   }
 }
-
-/* remember the instructor's day-access choice across reloads */
-Store.get('ltc:unlock').then(v => {
-  if (v === '1' || v === '0'){ override = (v === '1'); renderHome(); }
-});
 
 /* ============================================================
    MENU
