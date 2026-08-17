@@ -827,6 +827,17 @@ textarea:focus{outline:none;border-color:var(--bone-18)}
 
 .fig svg [stroke]:not([stroke-dasharray]){stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.15s cubic-bezier(.3,.7,.3,1) forwards;animation-delay:var(--dd,120ms)}
 .fig svg [stroke-dasharray]{opacity:0;animation:riseSm .6s ease forwards;animation-delay:calc(var(--dd,120ms) + 700ms)}
+
+/* Once an entrance has played, it has to stay played. The animating classes
+   above are permanent, and panes are shown and hidden by display — so every
+   return visit re-triggers the animation from its opacity:0 keyframe. On a
+   desktop that is an unnoticed re-flash; on a phone it can strand the content
+   invisible with the pane still full height. Latching each element when its
+   animation ends means visibility never depends on a second run. */
+.enter.settled,.enter-sm.settled,.plate.settled{opacity:1;transform:none;animation:none}
+.fig svg [stroke].settled{animation:none;stroke-dashoffset:0}
+.fig svg [stroke-dasharray].settled{animation:none;opacity:1}
+.cut.settled::after{animation:none;width:34px}
 .fig svg text{opacity:0;animation:riseSm .5s ease forwards;animation-delay:calc(var(--dd,120ms) + 520ms)}
 
 .tab{transition:color .25s ease}
@@ -2302,6 +2313,16 @@ function primePane(pane){
   primeFigures(pane);
   stagger(pane, '.lede, .slot, .card, .h3, .fig, ul.list, .steps, .pull, .info-row, .btn, .swatches, .footnote, .emptystate', 58, 60);
 }
+/* Latch every entrance the moment it finishes — see .settled in the stylesheet.
+   Capture phase and document level so it covers panes rendered later too.
+   Infinite animations (the certificate turn, the shimmer) never fire this. */
+document.addEventListener('animationend', e => {
+  const n = e.animationName;
+  if (n === 'rise' || n === 'riseSm' || n === 'draw' || n === 'wipe'){
+    if (e.target && e.target.classList) e.target.classList.add('settled');
+  }
+}, true);
+
 function stagger(scope, sel, step, start){
   scope.querySelectorAll(sel).forEach((el, i) => {
     el.classList.add('enter');
